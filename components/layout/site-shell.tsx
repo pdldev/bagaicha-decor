@@ -32,9 +32,9 @@ const links = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/services', label: 'Services' },
+  { href: '/gallary', label: 'Gallery' },
   { href: '/flowers-gifts', label: 'Flowers & Gifts' },
   { href: '/work', label: 'Recent work' },
-  { href: '/plan', label: 'Plan your event' },
   { href: '/contact', label: 'Contact' },
 ]
 
@@ -249,7 +249,7 @@ export function SiteHeader() {
   }, [])
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 transition-colors ${scrolled ? 'border-line bg-background/95 border-b backdrop-blur-sm' : 'bg-transparent'}`}
+      className={`fixed inset-x-0 top-0 z-40 transition-all duration-500 ease-out ${scrolled ? 'border-line bg-background/95 border-b shadow-[0_10px_30px_rgba(42,33,28,0.06)] backdrop-blur-sm' : 'bg-transparent'}`}
     >
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
         <div className="flex items-center gap-3">
@@ -261,7 +261,7 @@ export function SiteHeader() {
             <a
               key={link.href}
               href={link.href}
-              className={`hover:text-maroon relative py-2 text-[11px] tracking-[.16em] uppercase transition-colors ${pathname === link.href ? 'text-maroon after:bg-marigold after:absolute after:inset-x-0 after:-bottom-1 after:h-px' : 'text-ink/70'}`}
+              className={`hover:text-maroon relative py-2 text-[11px] tracking-[.16em] uppercase transition-all duration-300 ease-out ${pathname === link.href ? 'text-maroon after:bg-marigold after:absolute after:inset-x-0 after:-bottom-1 after:h-px' : 'text-ink/70'}`}
             >
               {link.label}
             </a>
@@ -371,7 +371,7 @@ export function FloatingWhatsApp() {
       target="_blank"
       rel="noreferrer"
       aria-label="Chat with us on WhatsApp"
-      className="group bg-maroon text-background fixed right-5 bottom-5 z-30 flex size-14 items-center justify-center rounded-full shadow-lg transition-transform hover:-translate-y-1"
+      className="group bg-maroon text-background fixed right-5 bottom-5 z-30 flex size-14 items-center justify-center rounded-full shadow-[0_12px_30px_rgba(123,45,59,0.25)] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(123,45,59,0.32)]"
     >
       <MessageCircle className="size-6" />
       <span className="bg-ink text-background pointer-events-none absolute right-full mr-3 hidden rounded-full px-3 py-1.5 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100 sm:block">
@@ -383,12 +383,12 @@ export function FloatingWhatsApp() {
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <div className="flex min-h-screen flex-col">
       {site.announcement.enabled && <div className="bg-marigold text-ink px-4 py-2 text-center text-xs tracking-wide">{site.announcement.text}</div>}
       <SiteHeader />
-      {children}
+      <div className="flex-1">{children}</div>
       <SiteFooter />
       <FloatingWhatsApp />
-    </>
+    </div>
   )
 }

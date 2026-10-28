@@ -38,6 +38,8 @@ export const getServices = () => validatedServices
 export const getServiceBySlug = (slug: string) =>
   validatedServices.find((service) => service.slug === slug)
 export const getService = (slug: string) => getServiceBySlug(slug)
+export const getServiceCatalogue = (slug: string) =>
+  getServiceBySlug(slug)?.catalogue ?? null
 export const getBouquets = () => validatedBouquets
 export const getGifts = () => validatedGifts
 export const getFeaturedBouquets = () =>

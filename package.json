@@ -5,6 +5,8 @@
   "packageManager": "pnpm@12.3.4",
   "scripts": {
     "dev": "next dev",
+    "check-downloads": "node --experimental-strip-types scripts/check-downloads.ts",
+    "prebuild": "npm run check-downloads",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",

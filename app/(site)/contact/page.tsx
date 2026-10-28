@@ -1,5 +1,13 @@
 import type { Metadata } from 'next'
 import {
+  ArrowUpRight,
+  Clock3,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+} from 'lucide-react'
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -60,7 +68,7 @@ export default function ContactPage() {
     "Namaste! I'd like to know more about Bagaicha Flower Decor and Events.",
   )
   const directions =
-    'https://www.google.com/maps/search/?api=1&query=Pokhara%2C%20Nepal'
+    'https://www.google.com/maps/place/Bagaicha+Flower+Decor+and+Events/@28.2137034,83.9853956,21z/data=!4m6!3m5!1s0x399595004494c103:0x3ee580a9bf868db!8m2!3d28.2136786!4d83.9853726!16s%2Fg%2F11xnw2k0yq?entry=ttu&g_ep=EgoyMDI2MTAyMC4wIKXMDSoASAFQAw%3D%3D'
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
@@ -74,7 +82,7 @@ export default function ContactPage() {
     geo: { '@type': 'GeoCoordinates', latitude: 28.2096, longitude: 83.9856 },
     openingHours: 'Su-Sa 09:00-19:00',
     telephone: site.phone,
-    sameAs: Object.values(site.socialLinks).filter((link) => link !== '#'),
+    sameAs: Object.values(site.socialLinks).filter(Boolean),
   }
 
   return (
@@ -140,7 +148,7 @@ export default function ContactPage() {
           <div>
             <p className="eyebrow">Service area</p>
             <h2 className="font-display mt-3 max-w-xl text-5xl leading-none font-light">
-              Come find us by the lake.
+              Come find us.
             </h2>
             <p className="text-ink/70 mt-5 max-w-lg text-sm leading-7">
               Serving Pokhara, Lekhnath, Sarangkot and Lakeside, with travel
@@ -163,8 +171,8 @@ export default function ContactPage() {
           <iframe
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title="Map of Pokhara"
-            src="https://www.google.com/maps?q=Pokhara,Nepal&output=embed"
+            title="Bagaicha Flower Decor and Events location map"
+            src={site.googleMapsEmbed}
             className="h-64 w-full border-0 grayscale sm:h-80"
           />
         </div>

@@ -21,6 +21,10 @@ export function basketMessage(items: EnquiryItem[]) {
     .join('\n')}`
 }
 
+export function catalogueRequestMessage(serviceName: string) {
+  return `Namaste Bagaicha! I've downloaded the ${serviceName} catalogue. Could you share current prices and availability for my date?`
+}
+
 export function contactFormMessage(input: {
   name: string
   phone: string
@@ -35,5 +39,6 @@ export const whatsappMessages = {
   serviceBooking: serviceBookingMessage,
   productOrder: productOrderMessage,
   basket: basketMessage,
+  catalogueRequest: catalogueRequestMessage,
   contactForm: contactFormMessage,
 }

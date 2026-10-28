@@ -34,6 +34,20 @@ html {
 }
 body {
   view-transition-name: page;
+  position: relative;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: -25%;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(217, 142, 4, 0.12), transparent 22%),
+    radial-gradient(circle at 80% 10%, rgba(123, 45, 59, 0.12), transparent 24%),
+    radial-gradient(circle at 55% 65%, rgba(62, 86, 66, 0.08), transparent 28%);
+  pointer-events: none;
+  z-index: 0;
+  animation: driftGlow 16s ease-in-out infinite alternate;
 }
 ::view-transition-old(page),
 ::view-transition-new(page) {
@@ -46,9 +60,34 @@ body {
   font-family: var(--font-dm-sans), sans-serif;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
 }
+body > * {
+  position: relative;
+  z-index: 1;
+}
 ::selection {
   background: var(--marigold);
   color: var(--ink);
+}
+img, svg, video, canvas {
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.7s ease,
+    opacity 0.7s ease;
+}
+a,
+button,
+input,
+select,
+textarea {
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    opacity 0.25s ease;
+}
+a:hover,
+button:hover {
+  transform: translateY(-1px);
 }
 .clip-reveal {
   clip-path: inset(0 0 100% 0);
@@ -57,7 +96,22 @@ body {
   animation-range: entry 10% cover 35%;
 }
 @keyframes image-reveal { to { clip-path: inset(0); } }
+@keyframes driftGlow {
+  0% { transform: translate3d(-2%, 0, 0) scale(1); }
+  100% { transform: translate3d(2%, 2%, 0) scale(1.08); }
+}
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes pulseSoft {
+  0%, 100% { box-shadow: 0 0 0 rgba(217, 142, 4, 0);
+  }
+  50% { box-shadow: 0 0 28px rgba(217, 142, 4, 0.16); }
+}
 .parallax-hero { transform: translateY(-2%); scale: 1.04; }
+.animate-float { animation: floatSlow 6s ease-in-out infinite; }
+.animate-pulse-soft { animation: pulseSoft 3.2s ease-in-out infinite; }
 .font-devanagari { font-family: var(--font-devanagari), serif; }
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--marigold);
@@ -86,15 +140,15 @@ body {
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translateY(28px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .clip-reveal {
+  .reveal, .clip-reveal, .animate-float, .animate-pulse-soft, body::before {
     animation: none;
   }
   .parallax-hero { transform: none; scale: 1; }

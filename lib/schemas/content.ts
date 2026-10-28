@@ -5,6 +5,13 @@ export const productSizeSchema = z.object({
   price: z.number().nonnegative(),
 })
 
+export const catalogueSchema = z.object({
+  file: z.string().min(1).startsWith('/downloads/catalogue/'),
+  preview: z.string().min(1).startsWith('/images/'),
+  pages: z.number().int().positive(),
+  sizeLabel: z.string().min(1),
+})
+
 export const serviceSchema = z.object({
   slug: z.string().min(1),
   name: z.string().min(1),
@@ -17,6 +24,7 @@ export const serviceSchema = z.object({
   idealFor: z.string().min(1),
   startingPrice: z.string().min(1),
   whatsappTemplate: z.string().min(1),
+  catalogue: catalogueSchema.optional(),
 })
 
 export const bouquetSchema = z.object({

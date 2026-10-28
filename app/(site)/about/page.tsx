@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
 import { WhatsAppButton } from '@/components/shared/whatsapp-button'
-import { SiteShell } from '@/components/layout/site-shell'
 import { aboutStory, numbers, team, values } from '@/data/about'
 
 export const metadata = {
@@ -31,7 +30,6 @@ function Reveal({
 
 export default function AboutPage() {
   return (
-    <SiteShell>
       <main className="bg-background text-ink overflow-hidden">
         <section
           className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16"
@@ -213,6 +211,5 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
-    </SiteShell>
   )
 }

@@ -4,7 +4,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import { ArrowUpRight } from 'lucide-react'
-import { SiteShell } from '@/components/layout/site-shell'
 import { WhatsAppButton } from '@/components/shared/whatsapp-button'
 import { services, type ServiceCategory } from '@/lib/content'
 
@@ -24,7 +23,6 @@ export function ServicesClient() {
       ? services
       : services.filter((service) => service.category === filter)
   return (
-    <SiteShell>
       <main className="bg-background text-ink overflow-hidden">
         <section className="mx-auto max-w-7xl px-6 pt-36 pb-10 sm:px-10 lg:px-16 lg:pb-16">
           <p className="eyebrow">Our services</p>
@@ -93,6 +91,5 @@ export function ServicesClient() {
           ))}
         </section>
       </main>
-    </SiteShell>
   )
 }

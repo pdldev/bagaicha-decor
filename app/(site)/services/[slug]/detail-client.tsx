@@ -7,10 +7,11 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowLeft, ArrowUpRight, Check, X } from 'lucide-react'
-import { SiteShell } from '@/components/layout/site-shell'
 import { WhatsAppButton } from '@/components/shared/whatsapp-button'
+import { CatalogueDownloadCard } from '@/components/services/catalogue-download-card'
 import { buildWhatsAppUrl } from '@/lib/whatsapp'
 import { services, type Service } from '@/lib/content'
+import type { ServiceCatalogue } from '@/types/content'
 
 const schema = z.object({
   date: z.string().min(1, 'Please choose a date.'),
@@ -21,7 +22,13 @@ const schema = z.object({
 })
 type FormValues = z.infer<typeof schema>
 
-export function ServiceDetail({ service }: { service: Service }) {
+export function ServiceDetail({
+  service,
+  catalogue,
+}: {
+  service: Service
+  catalogue?: ServiceCatalogue | null
+}) {
   const [lightbox, setLightbox] = useState<number | null>(null)
   const {
     register,
@@ -33,7 +40,6 @@ export function ServiceDetail({ service }: { service: Service }) {
     window.open(buildWhatsAppUrl(message), '_blank', 'noopener,noreferrer')
   }
   return (
-    <SiteShell>
       <main className="bg-background text-ink overflow-hidden">
         <section className="bg-surface relative mx-auto mt-24 min-h-[65vh] max-w-[1400px] sm:mt-28">
           <Image
@@ -90,6 +96,17 @@ export function ServiceDetail({ service }: { service: Service }) {
             </div>
           </div>
         </section>
+        {catalogue ? (
+          <section className="mx-auto max-w-7xl px-6 pb-6 sm:px-10 lg:px-16 lg:pb-8">
+            <div className="lg:hidden">
+              <CatalogueDownloadCard
+                serviceName={service.name}
+                slug={service.slug}
+                catalogue={catalogue}
+              />
+            </div>
+          </section>
+        ) : null}
         <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-16 lg:pb-28">
           <div className="mb-8">
             <p className="eyebrow">A closer look</p>
@@ -124,6 +141,15 @@ export function ServiceDetail({ service }: { service: Service }) {
                 Share a few details and we&apos;ll reply with ideas and a
                 thoughtful quote.
               </p>
+              {catalogue ? (
+                <div className="mt-8 hidden lg:block">
+                  <CatalogueDownloadCard
+                    serviceName={service.name}
+                    slug={service.slug}
+                    catalogue={catalogue}
+                  />
+                </div>
+              ) : null}
             </div>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -262,6 +288,5 @@ export function ServiceDetail({ service }: { service: Service }) {
           </div>
         )}
       </main>
-    </SiteShell>
   )
 }

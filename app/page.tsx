@@ -15,6 +15,20 @@ import { testimonials } from '@/lib/content'
 import { work } from '@/data/work'
 
 const image = '/placeholder.jpg'
+const galleryImages = Object.values(
+  import.meta.glob('./gallaryimg/*.{jpg,jpeg,png,webp}', {
+    eager: true,
+    import: 'default',
+    query: '?url',
+  }),
+) as string[]
+
+const galleryCategories = ['Weddings', 'Family Rituals', 'Celebrations', 'Vehicles'] as const
+const galleryItems = galleryImages.map((src, index) => ({
+  src,
+  category: galleryCategories[index % galleryCategories.length],
+}))
+
 const services = [
   ['01', 'Wedding', 'wedding'],
   ['02', 'Pasni', 'pasni'],
@@ -54,6 +68,11 @@ export default function Page() {
   const [flowerIndex, setFlowerIndex] = useState(0)
   const [testimonialIndex, setTestimonialIndex] = useState(0)
   const [lightbox, setLightbox] = useState<number | null>(null)
+  const [galleryFilter, setGalleryFilter] = useState<'All' | (typeof galleryCategories)[number]>('All')
+  const visibleGallery =
+    galleryFilter === 'All'
+      ? galleryItems
+      : galleryItems.filter((item) => item.category === galleryFilter)
   useEffect(() => {
     const timer = window.setInterval(
       () => setTestimonialIndex((i) => (i + 1) % testimonials.length),
@@ -72,7 +91,7 @@ export default function Page() {
           alt="Warm floral arrangement prepared in the Bagaicha studio"
           fill
           priority
-          className="object-cover opacity-50"
+          className="animate-float object-cover opacity-50"
           sizes="100vw"
         />
         <div className="from-ink/85 via-ink/25 absolute inset-0 bg-gradient-to-t to-transparent" />
@@ -92,7 +111,7 @@ export default function Page() {
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="#services"
-                className="bg-background text-ink inline-flex min-h-11 items-center gap-2 rounded-[2px] px-5 text-[11px] tracking-[.16em] uppercase"
+                className="bg-background text-ink animate-pulse-soft inline-flex min-h-11 items-center gap-2 rounded-[2px] px-5 text-[11px] tracking-[.16em] uppercase"
               >
                 Explore services <ArrowDown className="size-3.5" />
               </Link>
@@ -158,7 +177,7 @@ export default function Page() {
                 <Link
                   key={slug}
                   href={`/services/${slug}`}
-                  className={`group bg-surface relative overflow-hidden ${i === 0 ? 'row-span-2' : ''} ${i === 3 ? 'col-span-2' : ''}`}
+                  className={`group bg-surface relative overflow-hidden transition-transform duration-500 ease-out hover:-translate-y-1 ${i === 0 ? 'row-span-2' : ''} ${i === 3 ? 'col-span-2' : ''}`}
                 >
                   <Image
                     src={image}
@@ -341,29 +360,47 @@ export default function Page() {
 
       <Reveal>
         <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-16 lg:pb-28">
-          <div className="mb-10 flex items-end justify-between">
+          <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="eyebrow">A few beautiful things</p>
               <h2 className="section-title">From the gallery.</h2>
             </div>
-            <span className="text-ink/50 text-xs">Tap an image to enlarge</span>
+            <div className="flex flex-wrap gap-2">
+              {(['All', ...galleryCategories] as const).map((filter) => (
+                <button
+                  key={filter}
+                  onClick={() => setGalleryFilter(filter)}
+                  className={`border px-3 py-2 text-[9px] tracking-[.14em] uppercase transition-colors ${galleryFilter === filter ? 'border-maroon bg-maroon text-background' : 'border-line hover:border-maroon'}`}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, i) => (
+            {visibleGallery.slice(0, 8).map((item, i) => (
               <button
-                key={i}
+                key={`${item.src}-${i}`}
                 onClick={() => setLightbox(i)}
-                className={`bg-surface relative overflow-hidden text-left ${i === 0 || i === 5 ? 'aspect-[3/4]' : 'aspect-square'} ${i === 2 ? 'sm:col-span-2' : ''}`}
+                className={`bg-surface relative overflow-hidden text-left transition-transform duration-500 ease-out hover:-translate-y-1 ${i === 0 || i === 5 ? 'aspect-[3/4]' : 'aspect-square'} ${i === 2 ? 'sm:col-span-2' : ''}`}
               >
                 <Image
-                  src={image}
-                  alt={`Bagaicha event detail ${i + 1}`}
+                  src={item.src}
+                  alt={`Bagaicha ${item.category} detail ${i + 1}`}
                   fill
                   className="object-cover transition duration-700 hover:scale-105"
                   sizes="(max-width: 640px) 50vw, 25vw"
                 />
               </button>
             ))}
+          </div>
+          <div className="mt-8 flex justify-center">
+            <Link
+              href="/gallary"
+              className="border-ink inline-flex items-center border-b pb-1 text-[10px] tracking-[.16em] uppercase"
+            >
+              Show more <ArrowUpRight className="ml-2 size-3" />
+            </Link>
           </div>
         </section>
       </Reveal>
@@ -432,7 +469,7 @@ export default function Page() {
             <X className="size-7" />
           </button>
           <Image
-            src={image}
+            src={visibleGallery[lightbox]?.src ?? image}
             alt={`Enlarged Bagaicha gallery image ${lightbox + 1}`}
             width={1200}
             height={900}

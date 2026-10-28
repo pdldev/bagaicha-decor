@@ -1,6 +1,13 @@
 export type ServiceCategory =
   'Weddings' | 'Family Rituals' | 'Celebrations' | 'Vehicles'
 export type ProductSize = { label: 'Small' | 'Medium' | 'Large'; price: number }
+export type ServiceCatalogue = {
+  file: string
+  preview: string
+  pages: number
+  sizeLabel: string
+}
+
 export type Service = {
   slug: string
   name: string
@@ -13,6 +20,7 @@ export type Service = {
   idealFor: string
   startingPrice: string
   whatsappTemplate: string
+  catalogue?: ServiceCatalogue
 }
 export type Bouquet = {
   id: string

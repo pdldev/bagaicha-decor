@@ -2,9 +2,9 @@ export const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/services', label: 'Services' },
+  { href: '/gallary', label: 'Gallery' },
   { href: '/flowers-gifts', label: 'Flowers & Gifts' },
   { href: '/work', label: 'Recent work' },
-  { href: '/plan', label: 'Plan your event' },
   { href: '/contact', label: 'Contact' },
 ] as const
 
@@ -21,9 +21,11 @@ export const site = {
     text: 'Bookings for the festive season are open.',
   },
   socialLinks: {
-    instagram: '#',
-    facebook: '#',
-    tiktok: '#',
+    instagram: 'https://www.instagram.com/bagaicha_events/',
+    facebook:
+      'https://www.facebook.com/p/Bagaicha-Flower-Decor-and-Events-61574610042300/',
+    tiktok: 'https://www.tiktok.com/@bagaicha.decor.an/video/7669820661170294036',
   },
-  googleMapsEmbed: '',
+  googleMapsEmbed:
+    'https://www.google.com/maps?q=Bagaicha%20Flower%20Decor%20and%20Events%20Pokhara%20Nepal&output=embed',
 } as const

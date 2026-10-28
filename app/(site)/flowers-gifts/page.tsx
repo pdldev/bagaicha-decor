@@ -6,7 +6,6 @@ import { Check, ChevronDown, Minus, Plus, Search, X } from 'lucide-react'
 import { bouquets, type Bouquet, type ProductSize } from '@/lib/content'
 import { gifts, type Gift } from '@/lib/content'
 import { useEnquiryStore } from '@/store/enquiry'
-import { SiteShell } from '@/components/layout/site-shell'
 import { buildWhatsAppUrl } from '@/lib/whatsapp'
 
 const whatsapp = buildWhatsAppUrl
@@ -387,7 +386,7 @@ export default function FlowersGiftsPage() {
     [products, category, occasion, query, sort],
   )
   return (
-    <SiteShell>
+    <>
       <main className="pt-[76px]">
         <section className="mx-auto max-w-7xl px-5 pt-16 pb-12 sm:px-8 lg:px-12 lg:pt-24">
           <p className="eyebrow">Flower studio &amp; gifts</p>
@@ -464,6 +463,6 @@ export default function FlowersGiftsPage() {
       {selected && (
         <QuickView product={selected} close={() => setSelected(null)} />
       )}
-    </SiteShell>
+    </>
   )
 }
