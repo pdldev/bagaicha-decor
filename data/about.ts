@@ -1,7 +1,7 @@
 export const aboutStory = {
   intro: [
     'Bagaicha began with a simple love for flowers and the belief that the right bloom can change how a room feels. What started as small arrangements for friends slowly grew into a place where people could bring their biggest moments to life.',
-    'In [YEAR], that love became Bagaicha Flower Decor and Events — a decoration and event company rooted in Pokhara. We began with a few tools, a lot of curiosity, and an open invitation to make celebrations feel more personal.',
+    'In [YEAR], that love became Bagaicha Flower Decor and Events, a decoration and event company rooted in Pokhara. We began with a few tools, a lot of curiosity, and an open invitation to make celebrations feel more personal.',
     'Today, we work across weddings, family rituals, birthdays and gatherings of every shape. The work is still hands-on, still local, and still guided by the same care that started it all: making something beautiful that feels like yours.',
   ],
   quote:

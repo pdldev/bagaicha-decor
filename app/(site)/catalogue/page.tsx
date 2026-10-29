@@ -9,7 +9,21 @@ const fullCatalogue = {
 
 export const metadata = {
   title: 'Catalogue',
-  description: 'Browse the Bagaicha design catalogue and download the full PDF.',
+  description:
+    'Browse the Bagaicha design catalogue and download the full PDF.',
+  alternates: { canonical: '/catalogue' },
+  openGraph: {
+    title: 'Bagaicha design catalogue',
+    description: 'Browse and download the Bagaicha design catalogue.',
+    url: '/catalogue',
+    images: ['/images/catalogue/full-catalogue-preview.jpg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Bagaicha design catalogue',
+    description: 'Browse and download the Bagaicha design catalogue.',
+    images: ['/images/catalogue/full-catalogue-preview.jpg'],
+  },
 }
 
 export default function CataloguePage() {
@@ -19,7 +33,8 @@ export default function CataloguePage() {
         <div className="mb-12">
           <p className="eyebrow">Our catalogue</p>
           <h1 className="font-display mt-5 max-w-4xl text-[clamp(3.2rem,7vw,7rem)] leading-[.82] font-light tracking-[-.055em]">
-            A fuller look at our <em className="text-marigold">designs.</em>
+            A fuller look at our{' '}
+            <em className="text-marigold-contrast">designs.</em>
           </h1>
         </div>
 

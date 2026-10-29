@@ -13,7 +13,13 @@ export const metadata: Metadata = {
     url: '/services',
     images: ['/placeholder.jpg'],
   },
-  twitter: { card: 'summary_large_image', images: ['/placeholder.jpg'] },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Services',
+    description:
+      'Wedding, pasni, bratabandha and celebration decoration in Pokhara by Bagaicha.',
+    images: ['/placeholder.jpg'],
+  },
 }
 
 export default function ServicesPage() {

@@ -29,7 +29,13 @@ export const metadata: Metadata = {
     url: '/contact',
     images: ['/placeholder.jpg'],
   },
-  twitter: { card: 'summary_large_image', images: ['/placeholder.jpg'] },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact | Bagaicha Flower Decor and Events',
+    description:
+      'Plan your flowers, decor and next celebration with Bagaicha in Pokhara.',
+    images: ['/placeholder.jpg'],
+  },
 }
 
 const faqs = [

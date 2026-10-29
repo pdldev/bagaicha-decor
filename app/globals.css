@@ -9,6 +9,7 @@
   --color-surface: var(--surface);
   --color-ink: var(--ink);
   --color-marigold: var(--marigold);
+  --color-marigold-contrast: var(--marigold-contrast);
   --color-maroon: var(--maroon);
   --color-sage: var(--sage);
   --color-line: var(--line);
@@ -20,6 +21,7 @@
   --surface: #f2eadd;
   --ink: #2a211c;
   --marigold: #d98e04;
+  --marigold-contrast: #a15e00;
   --maroon: #7b2d3b;
   --sage: #3e5642;
   --line: #dccfbb;
@@ -42,8 +44,16 @@ body::before {
   position: fixed;
   inset: -25%;
   background:
-    radial-gradient(circle at 15% 20%, rgba(217, 142, 4, 0.12), transparent 22%),
-    radial-gradient(circle at 80% 10%, rgba(123, 45, 59, 0.12), transparent 24%),
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(217, 142, 4, 0.12),
+      transparent 22%
+    ),
+    radial-gradient(
+      circle at 80% 10%,
+      rgba(123, 45, 59, 0.12),
+      transparent 24%
+    ),
     radial-gradient(circle at 55% 65%, rgba(62, 86, 66, 0.08), transparent 28%);
   pointer-events: none;
   z-index: 0;
@@ -68,8 +78,13 @@ body > * {
   background: var(--marigold);
   color: var(--ink);
 }
-img, svg, video, canvas {
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.7s ease,
+img,
+svg,
+video,
+canvas {
+  transition:
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.7s ease,
     opacity 0.7s ease;
 }
 a,
@@ -91,30 +106,56 @@ button:hover {
 }
 .clip-reveal {
   clip-path: inset(0 0 100% 0);
-  animation: image-reveal 1.1s cubic-bezier(.22,1,.36,1) both;
+  animation: image-reveal 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 10% cover 35%;
 }
-@keyframes image-reveal { to { clip-path: inset(0); } }
+@keyframes image-reveal {
+  to {
+    clip-path: inset(0);
+  }
+}
 @keyframes driftGlow {
-  0% { transform: translate3d(-2%, 0, 0) scale(1); }
-  100% { transform: translate3d(2%, 2%, 0) scale(1.08); }
+  0% {
+    transform: translate3d(-2%, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(2%, 2%, 0) scale(1.08);
+  }
 }
 @keyframes floatSlow {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 @keyframes pulseSoft {
-  0%, 100% { box-shadow: 0 0 0 rgba(217, 142, 4, 0);
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(217, 142, 4, 0);
   }
-  50% { box-shadow: 0 0 28px rgba(217, 142, 4, 0.16); }
+  50% {
+    box-shadow: 0 0 28px rgba(217, 142, 4, 0.16);
+  }
 }
-.parallax-hero { transform: translateY(-2%); scale: 1.04; }
-.animate-float { animation: floatSlow 6s ease-in-out infinite; }
-.animate-pulse-soft { animation: pulseSoft 3.2s ease-in-out infinite; }
-.font-devanagari { font-family: var(--font-devanagari), serif; }
+.parallax-hero {
+  transform: translateY(-2%);
+  scale: 1.04;
+}
+.animate-float {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+.animate-pulse-soft {
+  animation: pulseSoft 3.2s ease-in-out infinite;
+}
+.font-devanagari {
+  font-family: var(--font-devanagari), serif;
+}
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--marigold);
+  outline: 2px solid var(--marigold-contrast);
   outline-offset: 4px;
 }
 .eyebrow {
@@ -148,8 +189,15 @@ button:hover {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .clip-reveal, .animate-float, .animate-pulse-soft, body::before {
+  .reveal,
+  .clip-reveal,
+  .animate-float,
+  .animate-pulse-soft,
+  body::before {
     animation: none;
   }
-  .parallax-hero { transform: none; scale: 1; }
+  .parallax-hero {
+    transform: none;
+    scale: 1;
+  }
 }

@@ -59,7 +59,10 @@ export function ContactForm() {
   if (sent) {
     const url = whatsappUrl(form.getValues())
     return (
-      <div className="border-line bg-surface/60 flex min-h-[420px] flex-col justify-center border p-7 sm:p-10">
+      <div
+        role="status"
+        className="border-line bg-surface/60 flex min-h-[420px] flex-col justify-center border p-7 sm:p-10"
+      >
         <p className="eyebrow">Enquiry ready</p>
         <h2 className="font-display mt-4 text-5xl leading-none font-light">
           Opening WhatsApp...
@@ -98,11 +101,20 @@ export function ContactForm() {
           Name
           <input
             {...fields('name')}
+            aria-invalid={Boolean(form.formState.errors.name)}
+            aria-describedby={
+              form.formState.errors.name ? 'name-error' : undefined
+            }
+            autoComplete="name"
             className="border-line placeholder:text-ink/35 focus:border-maroon border-0 border-b bg-transparent px-0 py-3 text-sm tracking-normal normal-case outline-none"
             placeholder="Your name"
           />
           {form.formState.errors.name && (
-            <span className="text-maroon text-[11px] tracking-normal normal-case">
+            <span
+              id="name-error"
+              role="alert"
+              className="text-maroon text-[11px] tracking-normal normal-case"
+            >
               {form.formState.errors.name.message}
             </span>
           )}
@@ -112,11 +124,20 @@ export function ContactForm() {
           <input
             {...fields('phone')}
             type="tel"
+            aria-invalid={Boolean(form.formState.errors.phone)}
+            aria-describedby={
+              form.formState.errors.phone ? 'phone-error' : undefined
+            }
+            autoComplete="tel"
             className="border-line placeholder:text-ink/35 focus:border-maroon border-0 border-b bg-transparent px-0 py-3 text-sm tracking-normal normal-case outline-none"
             placeholder="98..."
           />
           {form.formState.errors.phone && (
-            <span className="text-maroon text-[11px] tracking-normal normal-case">
+            <span
+              id="phone-error"
+              role="alert"
+              className="text-maroon text-[11px] tracking-normal normal-case"
+            >
               {form.formState.errors.phone.message}
             </span>
           )}
@@ -127,6 +148,10 @@ export function ContactForm() {
           Event type
           <select
             {...fields('eventType')}
+            aria-invalid={Boolean(form.formState.errors.eventType)}
+            aria-describedby={
+              form.formState.errors.eventType ? 'event-type-error' : undefined
+            }
             className="border-line focus:border-maroon border-0 border-b bg-transparent px-0 py-3 text-sm tracking-normal normal-case outline-none"
           >
             <option value="">Choose one</option>
@@ -137,7 +162,11 @@ export function ContactForm() {
             <option>Other</option>
           </select>
           {form.formState.errors.eventType && (
-            <span className="text-maroon text-[11px] tracking-normal normal-case">
+            <span
+              id="event-type-error"
+              role="alert"
+              className="text-maroon text-[11px] tracking-normal normal-case"
+            >
               {form.formState.errors.eventType.message}
             </span>
           )}
@@ -147,10 +176,18 @@ export function ContactForm() {
           <input
             {...fields('date')}
             type="date"
+            aria-invalid={Boolean(form.formState.errors.date)}
+            aria-describedby={
+              form.formState.errors.date ? 'date-error' : undefined
+            }
             className="border-line focus:border-maroon border-0 border-b bg-transparent px-0 py-3 text-sm tracking-normal normal-case outline-none"
           />
           {form.formState.errors.date && (
-            <span className="text-maroon text-[11px] tracking-normal normal-case">
+            <span
+              id="date-error"
+              role="alert"
+              className="text-maroon text-[11px] tracking-normal normal-case"
+            >
               {form.formState.errors.date.message}
             </span>
           )}
@@ -160,11 +197,20 @@ export function ContactForm() {
         Venue / location
         <input
           {...fields('venue')}
+          aria-invalid={Boolean(form.formState.errors.venue)}
+          aria-describedby={
+            form.formState.errors.venue ? 'venue-error' : undefined
+          }
+          autoComplete="street-address"
           className="border-line placeholder:text-ink/35 focus:border-maroon border-0 border-b bg-transparent px-0 py-3 text-sm tracking-normal normal-case outline-none"
           placeholder="Where will it be?"
         />
         {form.formState.errors.venue && (
-          <span className="text-maroon text-[11px] tracking-normal normal-case">
+          <span
+            id="venue-error"
+            role="alert"
+            className="text-maroon text-[11px] tracking-normal normal-case"
+          >
             {form.formState.errors.venue.message}
           </span>
         )}
@@ -173,12 +219,20 @@ export function ContactForm() {
         Message
         <textarea
           {...fields('message')}
+          aria-invalid={Boolean(form.formState.errors.message)}
+          aria-describedby={
+            form.formState.errors.message ? 'message-error' : undefined
+          }
           rows={4}
           className="border-line placeholder:text-ink/35 focus:border-maroon resize-none border-0 border-b bg-transparent px-0 py-3 text-sm tracking-normal normal-case outline-none"
           placeholder="Colours, guest count, anything you already know..."
         />
         {form.formState.errors.message && (
-          <span className="text-maroon text-[11px] tracking-normal normal-case">
+          <span
+            id="message-error"
+            role="alert"
+            className="text-maroon text-[11px] tracking-normal normal-case"
+          >
             {form.formState.errors.message.message}
           </span>
         )}

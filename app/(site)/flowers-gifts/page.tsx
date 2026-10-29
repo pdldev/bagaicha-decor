@@ -181,18 +181,21 @@ function QuickView({
           </div>
           <div className="grid gap-3">
             <input
+              aria-label="Delivery area"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Delivery area"
               className="border-line placeholder:text-ink/40 border-b bg-transparent px-0 py-2 text-sm outline-none"
             />
             <input
+              aria-label="Delivery date or time"
               value={date}
               onChange={(e) => setDate(e.target.value)}
               placeholder="Delivery date / time"
               className="border-line placeholder:text-ink/40 border-b bg-transparent px-0 py-2 text-sm outline-none"
             />
             <textarea
+              aria-label="Optional card message"
               value={card}
               onChange={(e) => setCard(e.target.value)}
               placeholder="Optional card message"
@@ -273,12 +276,14 @@ function FilterBar({
         <div className="border-line flex items-center gap-7 border-b">
           <button
             onClick={() => setTab('bouquets')}
+            aria-pressed={tab === 'bouquets'}
             className={`font-display pb-3 text-3xl ${tab === 'bouquets' ? 'border-maroon text-maroon border-b-2' : 'text-ink/45'}`}
           >
             Bouquets
           </button>
           <button
             onClick={() => setTab('gifts')}
+            aria-pressed={tab === 'gifts'}
             className={`font-display pb-3 text-3xl ${tab === 'gifts' ? 'border-maroon text-maroon border-b-2' : 'text-ink/45'}`}
           >
             Gifts
@@ -290,6 +295,7 @@ function FilterBar({
               <button
                 key={item}
                 onClick={() => setCategory(item)}
+                aria-pressed={category === item}
                 className={`rounded-full border px-3 py-1.5 text-[10px] tracking-[.08em] whitespace-nowrap uppercase ${category === item ? 'border-maroon bg-maroon text-background' : 'border-line text-ink/60'}`}
               >
                 {item}
@@ -300,6 +306,7 @@ function FilterBar({
             <label className="border-line flex flex-1 items-center gap-2 border-b px-1 py-1 sm:w-44">
               <Search className="text-ink/45 size-4" />
               <input
+                aria-label="Search flowers and gifts"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search flowers..."
@@ -307,6 +314,7 @@ function FilterBar({
               />
             </label>
             <select
+              aria-label="Filter by occasion"
               value={occasion}
               onChange={(e) => setOccasion(e.target.value)}
               className="hidden bg-transparent text-xs outline-none sm:block"
@@ -319,6 +327,7 @@ function FilterBar({
               <option>Thank you</option>
             </select>
             <select
+              aria-label="Sort flowers and gifts"
               value={sort}
               onChange={(e) => setSort(e.target.value)}
               className="bg-transparent text-xs outline-none"

@@ -8,7 +8,7 @@ export default function NotFound() {
         <h1 className="font-display mt-5 text-[clamp(4rem,12vw,9rem)] leading-[.8] font-light tracking-[-.06em]">
           This petal
           <br />
-          <em className="text-marigold">drifted away.</em>
+          <em className="text-marigold-contrast">drifted away.</em>
         </h1>
         <p className="text-ink/65 mx-auto mt-8 max-w-sm text-sm leading-7">
           The page you were looking for is no longer here. Let&apos;s take you

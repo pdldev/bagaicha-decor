@@ -21,10 +21,13 @@ export async function generateMetadata({
     openGraph: {
       title: service?.name ?? 'Service',
       description: service?.shortDescription,
+      url: `/services/${slug}`,
       images: service ? [service.heroImage] : ['/placeholder.jpg'],
     },
     twitter: {
       card: 'summary_large_image',
+      title: service?.name ?? 'Service',
+      description: service?.shortDescription,
       images: service ? [service.heroImage] : ['/placeholder.jpg'],
     },
   } satisfies Metadata

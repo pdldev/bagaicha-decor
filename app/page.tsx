@@ -13,6 +13,14 @@ import {
 import { WhatsAppButton } from '@/components/shared/whatsapp-button'
 import { testimonials } from '@/lib/content'
 import { work } from '@/data/work'
+import heroImage from './front page/fp1.jpg'
+import weddingImage from './images/Weeding1.jpeg'
+import pasniImage from './images/pasni1.jpeg'
+import bratabandhaImage from './images/barta1.jpg'
+import receptionImage from './images/wr1.jpeg'
+import haldiImage from './images/haldi1.jpg'
+import birthdayImage from './images/bd1.jpeg'
+import carImage from './images/car1.jpeg'
 
 const image = '/placeholder.jpg'
 const galleryImages = Object.values(
@@ -23,21 +31,56 @@ const galleryImages = Object.values(
   }),
 ) as string[]
 
-const galleryCategories = ['Weddings', 'Family Rituals', 'Celebrations', 'Vehicles'] as const
+const galleryCategories = [
+  'Weddings',
+  'Family Rituals',
+  'Celebrations',
+  'Vehicles',
+] as const
 const galleryItems = galleryImages.map((src, index) => ({
   src,
   category: galleryCategories[index % galleryCategories.length],
 }))
 
 const services = [
-  ['01', 'Wedding', 'wedding'],
-  ['02', 'Pasni', 'pasni'],
-  ['03', 'Bratabandha', 'bratabandha'],
-  ['04', 'Reception', 'reception'],
-  ['05', 'Haldi & Mehendi', 'haldi-mehendi'],
-  ['06', 'Birthday', 'birthday'],
-  ['07', 'Car Decoration', 'car-decoration'],
-  ['08', 'Other events', 'other-events'],
+  {
+    number: '01',
+    name: 'Wedding',
+    slug: 'wedding',
+    image: weddingImage,
+  },
+  { number: '02', name: 'Pasni', slug: 'pasni', image: pasniImage },
+  {
+    number: '03',
+    name: 'Bratabandha',
+    slug: 'bratabandha',
+    image: bratabandhaImage,
+  },
+  {
+    number: '04',
+    name: 'Reception',
+    slug: 'reception',
+    image: receptionImage,
+  },
+  {
+    number: '05',
+    name: 'Haldi & Mehendi',
+    slug: 'haldi-mehendi',
+    image: haldiImage,
+  },
+  { number: '06', name: 'Birthday', slug: 'birthday', image: birthdayImage },
+  {
+    number: '07',
+    name: 'Car Decoration',
+    slug: 'car-decoration',
+    image: carImage,
+  },
+  {
+    number: '08',
+    name: 'Other events',
+    slug: 'other-events',
+    image,
+  },
 ]
 const bouquets = [
   ['Marigold Morning', 'Rs. 2,500'],
@@ -68,7 +111,9 @@ export default function Page() {
   const [flowerIndex, setFlowerIndex] = useState(0)
   const [testimonialIndex, setTestimonialIndex] = useState(0)
   const [lightbox, setLightbox] = useState<number | null>(null)
-  const [galleryFilter, setGalleryFilter] = useState<'All' | (typeof galleryCategories)[number]>('All')
+  const [galleryFilter, setGalleryFilter] = useState<
+    'All' | (typeof galleryCategories)[number]
+  >('All')
   const visibleGallery =
     galleryFilter === 'All'
       ? galleryItems
@@ -87,7 +132,7 @@ export default function Page() {
     <main className="bg-background text-ink overflow-hidden">
       <section className="bg-ink text-background relative flex min-h-[calc(100svh-76px)] items-end">
         <Image
-          src={image}
+          src={heroImage}
           alt="Warm floral arrangement prepared in the Bagaicha studio"
           fill
           priority
@@ -102,7 +147,7 @@ export default function Page() {
             </p>
             <h1 className="font-display text-[clamp(4rem,10vw,9.5rem)] leading-[.82] font-light tracking-[-.055em]">
               Flowers for the days you&apos;ll{' '}
-              <em className="text-marigold">remember.</em>
+              <em className="text-marigold-contrast">remember.</em>
             </h1>
             <p className="text-background/75 mt-8 max-w-md text-sm leading-6">
               Wedding, pasni, bratabandha and every celebration in Pokhara,
@@ -134,7 +179,8 @@ export default function Page() {
       <Reveal>
         <section className="mx-auto grid max-w-7xl gap-10 px-6 py-20 sm:px-10 lg:grid-cols-[1.1fr_.9fr] lg:items-center lg:px-16 lg:py-32">
           <p className="font-display max-w-3xl text-4xl leading-[1.02] font-light tracking-[-.03em] sm:text-6xl">
-            A flower studio for <em className="text-marigold">unforgettable</em>{' '}
+            A flower studio for{' '}
+            <em className="text-marigold-contrast">unforgettable</em>{' '}
             gatherings, where every petal has a place and every detail feels
             like you.
           </p>
@@ -162,7 +208,7 @@ export default function Page() {
           <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 lg:px-16 lg:py-24">
             <div className="mb-12 flex items-end justify-between">
               <div>
-                <p className="eyebrow">01 — What we decorate</p>
+                <p className="eyebrow">01: What we decorate</p>
                 <h2 className="section-title">The good stuff.</h2>
               </div>
               <Link
@@ -173,36 +219,38 @@ export default function Page() {
               </Link>
             </div>
             <div className="grid auto-rows-[180px] grid-cols-2 gap-2 sm:auto-rows-[220px] sm:grid-cols-4">
-              {services.map(([number, name, slug], i) => (
-                <Link
-                  key={slug}
-                  href={`/services/${slug}`}
-                  className={`group bg-surface relative overflow-hidden transition-transform duration-500 ease-out hover:-translate-y-1 ${i === 0 ? 'row-span-2' : ''} ${i === 3 ? 'col-span-2' : ''}`}
-                >
-                  <Image
-                    src={image}
-                    alt={`${name} decoration by Bagaicha`}
-                    fill
-                    className="object-cover transition duration-700 group-hover:scale-105"
-                    sizes="(max-width: 640px) 50vw, 25vw"
-                  />
-                  <div className="from-ink/80 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
-                  <div className="text-background absolute inset-x-4 bottom-4 flex items-end justify-between">
-                    <div>
-                      <span className="text-background/70 text-[10px]">
-                        {number}
-                      </span>
-                      <p className="font-display text-2xl leading-none sm:text-3xl">
-                        {name}
-                      </p>
-                      <p className="text-background/0 group-hover:text-background/75 mt-2 max-w-32 text-[10px] leading-4 transition">
-                        Made personal, from first flower to final detail.
-                      </p>
+              {services.map(
+                ({ number, name, slug, image: serviceImage }, i) => (
+                  <Link
+                    key={slug}
+                    href={`/services/${slug}`}
+                    className={`group bg-surface relative overflow-hidden transition-transform duration-500 ease-out hover:-translate-y-1 ${i === 0 ? 'row-span-2' : ''} ${i === 3 ? 'col-span-2' : ''}`}
+                  >
+                    <Image
+                      src={serviceImage}
+                      alt={`${name} decoration by Bagaicha`}
+                      fill
+                      className="object-cover transition duration-700 group-hover:scale-105"
+                      sizes="(max-width: 640px) 50vw, 25vw"
+                    />
+                    <div className="from-ink/80 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
+                    <div className="text-background absolute inset-x-4 bottom-4 flex items-end justify-between">
+                      <div>
+                        <span className="text-background/70 text-[10px]">
+                          {number}
+                        </span>
+                        <p className="font-display text-2xl leading-none sm:text-3xl">
+                          {name}
+                        </p>
+                        <p className="text-background/0 group-hover:text-background/75 mt-2 max-w-32 text-[10px] leading-4 transition">
+                          Made personal, from first flower to final detail.
+                        </p>
+                      </div>
+                      <ArrowUpRight className="size-5" />
                     </div>
-                    <ArrowUpRight className="size-5" />
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                ),
+              )}
             </div>
             <Link
               href="/services"
@@ -218,7 +266,7 @@ export default function Page() {
         <section className="mx-auto max-w-7xl px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
           <div className="mb-10 flex items-end justify-between">
             <div>
-              <p className="eyebrow">02 — From our flower studio</p>
+              <p className="eyebrow">02: From our flower studio</p>
               <h2 className="section-title">A little something lovely.</h2>
             </div>
             <div className="flex gap-2">
@@ -305,7 +353,7 @@ export default function Page() {
                   [
                     '02',
                     'Custom themes',
-                    'Your colours, your feeling, your little details — never a copy-paste setup.',
+                    'Your colours, your feeling, your little details, never a copy-paste setup.',
                   ],
                   [
                     '03',
@@ -322,7 +370,7 @@ export default function Page() {
                     key={n}
                     className="border-line grid grid-cols-[42px_1fr] gap-4 border-t py-5"
                   >
-                    <span className="text-marigold text-xs">{n}</span>
+                    <span className="text-marigold-contrast text-xs">{n}</span>
                     <div>
                       <h3 className="font-display text-2xl">{title}</h3>
                       <p className="text-ink/65 mt-2 max-w-md text-sm leading-6">
@@ -407,8 +455,43 @@ export default function Page() {
 
       <Reveal>
         <section className="mx-auto max-w-7xl px-6 py-20 sm:px-10 md:py-32 lg:px-16">
-          <div className="mb-10 flex items-end justify-between"><div><p className="eyebrow">Recent work</p><h2 className="section-title">A few days we&apos;ve decorated.</h2></div><Link href="/work" className="hidden items-center gap-2 text-xs uppercase tracking-[.14em] hover:text-maroon sm:flex">See all work <ArrowUpRight className="size-4" /></Link></div>
-          <div className="grid gap-5 sm:grid-cols-2">{work.map((entry) => <Link key={entry.slug} href={`/work/${entry.slug}`} className="group"><div className="bg-surface relative aspect-[4/3] overflow-hidden"><Image src={entry.photos[0]} alt={entry.title} fill sizes="(max-width: 640px) 100vw, 50vw" className="clip-reveal object-cover transition duration-700 group-hover:scale-105" /></div><p className="font-display mt-4 text-2xl">{entry.title}</p><p className="text-ink/55 mt-1 text-xs uppercase tracking-[.14em]">{entry.eventType} · {entry.venue}</p></Link>)}</div>
+          <div className="mb-10 flex items-end justify-between">
+            <div>
+              <p className="eyebrow">Recent work</p>
+              <h2 className="section-title">
+                A few days we&apos;ve decorated.
+              </h2>
+            </div>
+            <Link
+              href="/work"
+              className="hover:text-maroon hidden items-center gap-2 text-xs tracking-[.14em] uppercase sm:flex"
+            >
+              See all work <ArrowUpRight className="size-4" />
+            </Link>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {work.map((entry) => (
+              <Link
+                key={entry.slug}
+                href={`/work/${entry.slug}`}
+                className="group"
+              >
+                <div className="bg-surface relative aspect-[4/3] overflow-hidden">
+                  <Image
+                    src={entry.photos[0]}
+                    alt={entry.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className="clip-reveal object-cover transition duration-700 group-hover:scale-105"
+                  />
+                </div>
+                <p className="font-display mt-4 text-2xl">{entry.title}</p>
+                <p className="text-ink/55 mt-1 text-xs tracking-[.14em] uppercase">
+                  {entry.eventType} · {entry.venue}
+                </p>
+              </Link>
+            ))}
+          </div>
         </section>
       </Reveal>
 

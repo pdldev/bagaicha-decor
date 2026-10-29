@@ -45,7 +45,7 @@ function Mark() {
     <svg
       aria-hidden="true"
       viewBox="0 0 28 24"
-      className="text-marigold size-7"
+      className="text-marigold-contrast size-7"
     >
       <path
         d="M14 12C5 13 3 6 7 3c4 0 7 3 7 9Zm0 0c9 1 11-6 7-9-4 0-7 3-7 9Zm0 0c0 7-5 9-8 6 0-4 3-6 8-6Zm0 0c0 7 5 9 8 6 0-4-3-6-8-6Z"
@@ -71,7 +71,10 @@ function Brand() {
           Bagaicha
         </span>
         <span className="text-ink/55 mt-1 block text-[8px] tracking-[.2em] uppercase">
-          Flower Decor &amp; Events <span className="font-display ml-1 text-[11px] normal-case tracking-normal">बगैँचा</span>
+          Flower Decor &amp; Events{' '}
+          <span className="font-display ml-1 text-[11px] tracking-normal normal-case">
+            बगैँचा
+          </span>
         </span>
       </span>
     </Link>
@@ -112,7 +115,7 @@ function EnquiryBasket() {
           {items.length === 0 ? (
             <div className="flex flex-1 flex-col items-center justify-center text-center">
               <ShoppingBasket
-                className="text-marigold mb-4 size-8"
+                className="text-marigold-contrast mb-4 size-8"
                 strokeWidth={1}
               />
               <p className="font-display text-2xl">Your basket is waiting.</p>
@@ -249,7 +252,7 @@ export function SiteHeader() {
   }, [])
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 transition-all duration-500 ease-out ${scrolled ? 'border-line bg-background/95 border-b shadow-[0_10px_30px_rgba(42,33,28,0.06)] backdrop-blur-sm' : 'bg-transparent'}`}
+      className={`bg-background/95 fixed inset-x-0 top-0 z-40 backdrop-blur-sm transition-all duration-500 ease-out ${scrolled ? 'border-line border-b shadow-[0_10px_30px_rgba(42,33,28,0.06)]' : ''}`}
     >
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
         <div className="flex items-center gap-3">
@@ -310,7 +313,9 @@ export function SiteFooter() {
             <p className="font-display text-5xl leading-[.95] sm:text-6xl">
               Let&apos;s make your day bloom.
             </p>
-            <p className="font-display mt-3 text-lg text-background/70">बगैँचा</p>
+            <p className="font-display text-background/70 mt-3 text-lg">
+              बगैँचा
+            </p>
             <PetalLine />
           </div>
           <div>
@@ -357,7 +362,19 @@ export function SiteFooter() {
             © {new Date().getFullYear()} Bagaicha Flower Decor and Events
           </span>
           <span>Pokhara, Nepal</span>
-          <span>Instagram · Facebook</span>
+          <div className="flex flex-wrap gap-4">
+            <span>Instagram · Facebook</span>
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
+            <button
+              type="button"
+              onClick={() =>
+                window.dispatchEvent(new Event('bagaicha:open-privacy-choices'))
+              }
+            >
+              Privacy choices
+            </button>
+          </div>
         </div>
       </div>
     </footer>
@@ -384,7 +401,11 @@ export function FloatingWhatsApp() {
 export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
-      {site.announcement.enabled && <div className="bg-marigold text-ink px-4 py-2 text-center text-xs tracking-wide">{site.announcement.text}</div>}
+      {site.announcement.enabled && (
+        <div className="bg-marigold text-ink px-4 py-2 text-center text-xs tracking-wide">
+          {site.announcement.text}
+        </div>
+      )}
       <SiteHeader />
       <div className="flex-1">{children}</div>
       <SiteFooter />

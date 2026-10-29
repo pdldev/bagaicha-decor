@@ -1,5 +1,4 @@
 import { expect, test } from '@playwright/test'
-import { services } from '@/data/services'
 
 test('home loads and navigation works', async ({ page }) => {
   await page.goto('/')
@@ -27,11 +26,45 @@ test('bouquet filtering and enquiry badge work', async ({ page }) => {
 
 test('contact validation appears', async ({ page }) => {
   await page.goto('/contact')
-  await page.getByRole('button', { name: /send/i }).click()
-  await expect(page.locator('body')).toContainText(/required|please|valid/i)
+  await page.getByRole('button', { name: /open whatsapp/i }).click()
+  const name = page.getByRole('textbox', { name: 'Name' })
+  await expect(name).toHaveAttribute('aria-invalid', 'true')
+  const errorId = await name.getAttribute('aria-describedby')
+  expect(errorId).toBeTruthy()
+  await expect(page.locator(`#${errorId}`)).toHaveAttribute('role', 'alert')
 })
 
-test('every service detail returns 200', async ({ request }) => {
-  for (const service of services)
-    expect((await request.get(`/services/${service.slug}`)).status()).toBe(200)
+test('legal pages load and are listed in the sitemap', async ({
+  page,
+  request,
+}) => {
+  for (const route of ['/privacy', '/terms']) {
+    await page.goto(route)
+    await expect(page.locator('h1')).toBeVisible()
+    await expect(page).toHaveTitle(/.+/)
+  }
+
+  const sitemap = await request.get('/sitemap.xml')
+  expect(sitemap.ok()).toBeTruthy()
+  const sitemapXml = await sitemap.text()
+  expect(sitemapXml).toContain('/privacy')
+  expect(sitemapXml).toContain('/terms')
+})
+
+test('every service detail returns 200', async ({ page, request }) => {
+  await page.goto('/services')
+  const servicePaths = await page
+    .locator('a[href^="/services/"]')
+    .evaluateAll((anchors) =>
+      Array.from(
+        new Set(
+          anchors
+            .map((anchor) => anchor.getAttribute('href'))
+            .filter((href): href is string => href !== null),
+        ),
+      ),
+    )
+
+  for (const servicePath of servicePaths)
+    expect((await request.get(servicePath)).status()).toBe(200)
 })

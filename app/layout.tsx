@@ -1,8 +1,12 @@
-import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Cormorant_Garamond, DM_Sans, Noto_Serif_Devanagari } from 'next/font/google'
+import {
+  Cormorant_Garamond,
+  DM_Sans,
+  Noto_Serif_Devanagari,
+} from 'next/font/google'
 import './globals.css'
 import { SiteShell } from '@/components/layout/site-shell'
+import { AnalyticsConsent } from '@/components/shared/analytics-consent'
 import { site } from '@/config/site'
 
 const cormorant = Cormorant_Garamond({
@@ -50,7 +54,12 @@ export const metadata: Metadata = {
       },
     ],
   },
-  twitter: { card: 'summary_large_image', images: ['/placeholder.jpg'] },
+  twitter: {
+    card: 'summary_large_image',
+    title: site.name,
+    description: site.tagline,
+    images: ['/placeholder.jpg'],
+  },
 }
 
 export const viewport: Viewport = {
@@ -63,9 +72,11 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${cormorant.variable} ${dmSans.variable} ${devanagari.variable} antialiased`}>
+      <body
+        className={`${cormorant.variable} ${dmSans.variable} ${devanagari.variable} antialiased`}
+      >
         <SiteShell>{children}</SiteShell>
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <AnalyticsConsent />
       </body>
     </html>
   )
