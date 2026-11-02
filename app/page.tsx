@@ -13,7 +13,10 @@ import {
 import { WhatsAppButton } from '@/components/shared/whatsapp-button'
 import { testimonials } from '@/lib/content'
 import { work } from '@/data/work'
-import heroImage from './front page/fp1.jpg'
+import heroImage from './front page/hero.jpeg'
+import boq1Image from './front page/boq1.jpeg'
+import boq2Image from './front page/boq2.jpeg'
+import whyImage from './front page/why.jpeg'
 import weddingImage from './images/Weeding1.jpeg'
 import pasniImage from './images/pasni1.jpeg'
 import bratabandhaImage from './images/barta1.jpg'
@@ -186,15 +189,15 @@ export default function Page() {
           </p>
           <div className="relative min-h-72">
             <Image
-              src={image}
-              alt="Flowers in soft natural light"
+              src={boq1Image}
+              alt="Bouquet arranged by Bagaicha"
               width={320}
               height={420}
               className="absolute top-4 left-8 h-64 w-48 object-cover sm:h-80 sm:w-60"
             />
             <Image
-              src={image}
-              alt="Close detail of a floral arrangement"
+              src={boq2Image}
+              alt="Floral bouquet detail by Bagaicha"
               width={280}
               height={350}
               className="absolute top-0 right-4 h-48 w-40 object-cover sm:h-60 sm:w-48"
@@ -333,7 +336,7 @@ export default function Page() {
           <div className="mx-auto grid max-w-7xl gap-14 px-6 py-20 sm:px-10 lg:grid-cols-[.9fr_1.1fr] lg:px-16 lg:py-28">
             <div className="relative min-h-[420px]">
               <Image
-                src={image}
+                src={whyImage}
                 alt="Bagaicha team floral styling at an event"
                 fill
                 className="object-cover"

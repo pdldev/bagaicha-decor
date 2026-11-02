@@ -25,9 +25,11 @@ function productMessage(
 function ProductCard({
   product,
   onOpen,
+  onAdded,
 }: {
   product: Product
   onOpen: (product: Product) => void
+  onAdded: (name: string) => void
 }) {
   const { addItem } = useEnquiryStore()
   const price = product.price
@@ -74,14 +76,15 @@ function ProductCard({
           Order on WhatsApp
         </a>
         <button
-          onClick={() =>
+          onClick={() => {
             addItem({
               id: product.id,
               name: product.name,
               type: product.category,
               price,
             })
-          }
+            onAdded(product.name)
+          }}
           className="text-maroon text-[10px] tracking-[.1em] uppercase"
         >
           Add to enquiry
@@ -94,9 +97,11 @@ function ProductCard({
 function QuickView({
   product,
   close,
+  onAdded,
 }: {
   product: Product
   close: () => void
+  onAdded: (name: string) => void
 }) {
   const { addItem } = useEnquiryStore()
   const sizes = 'sizes' in product ? product.sizes : undefined
@@ -223,6 +228,7 @@ function QuickView({
                     price,
                     qty,
                   })
+                  onAdded(product.name)
                   close()
                 }}
                 className="text-maroon text-[10px] tracking-[.1em] uppercase"
@@ -352,6 +358,12 @@ export default function FlowersGiftsPage() {
   const [sort, setSort] = useState('featured')
   const [selected, setSelected] = useState<Product | null>(null)
   const [toast, setToast] = useState('')
+  useEffect(() => {
+    if (!toast) return
+    const timeout = window.setTimeout(() => setToast(''), 3000)
+    return () => window.clearTimeout(timeout)
+  }, [toast])
+  const notifyAdded = (name: string) => setToast(name)
   const products = tab === 'bouquets' ? bouquets : gifts
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
@@ -422,6 +434,7 @@ export default function FlowersGiftsPage() {
                 key={product.id}
                 product={product}
                 onOpen={setSelected}
+                onAdded={notifyAdded}
               />
             ))}
           </div>
@@ -470,7 +483,38 @@ export default function FlowersGiftsPage() {
         </section>
       </main>
       {selected && (
-        <QuickView product={selected} close={() => setSelected(null)} />
+        <QuickView
+          product={selected}
+          close={() => setSelected(null)}
+          onAdded={notifyAdded}
+        />
+      )}
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="border-line bg-background fixed right-4 bottom-4 z-[60] flex w-[calc(100%-2rem)] max-w-sm animate-[fade-up_0.3s_ease-out_both] items-center gap-4 border p-4 shadow-[0_16px_48px_rgba(37,34,29,0.16)] sm:right-6 sm:bottom-6"
+        >
+          <span className="bg-sage/10 text-sage flex size-11 shrink-0 items-center justify-center rounded-full">
+            <Check className="size-5" strokeWidth={2.5} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="text-maroon block text-[9px] tracking-[.18em] uppercase">
+              Added to your enquiry
+            </span>
+            <span className="font-display mt-1 block truncate text-xl leading-tight">
+              {toast}
+            </span>
+          </span>
+          <button
+            type="button"
+            onClick={() => setToast('')}
+            aria-label="Dismiss notification"
+            className="text-ink/45 hover:text-ink self-start p-1 transition-colors"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
       )}
     </>
   )
