@@ -11,7 +11,7 @@ import {
 describe('buildWhatsAppUrl', () => {
   it('encodes Nepali text and line breaks', () => {
     const url = buildWhatsAppUrl('नमस्ते\nFlowers & joy')
-    expect(url).toContain('https://wa.me/')
+    expect(url).toContain('https://wa.me/9779869552940?text=')
     expect(decodeURIComponent(url.split('text=')[1])).toContain(
       'नमस्ते\nFlowers & joy',
     )
@@ -29,8 +29,16 @@ describe('message templates', () => {
     expect(serviceBookingMessage({ name: 'Pasni' })).toContain('Pasni')
     expect(productOrderMessage({ name: 'Bouquet' })).toContain('Bouquet')
     expect(
-      basketMessage([{ id: '1', name: 'Rose', type: 'bouquet', qty: 2 }]),
-    ).toContain('Rose x2')
+      basketMessage([
+        {
+          id: '1',
+          name: 'Rose',
+          qty: 2,
+          price: { original: 2000, final: 1600, discounted: true },
+          offer: { festival: 'Tihar', discountPercent: 20 },
+        },
+      ]),
+    ).toContain('Rose: Rs. 1,600 (was Rs. 2,000, Tihar 20% off) x2')
     expect(
       contactFormMessage({
         name: 'Asha',

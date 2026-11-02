@@ -7,3 +7,4 @@ export {
   serviceSchema,
   testimonialSchema,
 } from './content'
+export { offerIdSchema, offerQuerySchema, offerSchema } from './offer'

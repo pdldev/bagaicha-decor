@@ -4,16 +4,10 @@ import { z } from 'zod'
 
 export type EnquiryItem = {
   id: string
-  name: string
-  type: string
-  price?: number
   qty: number
 }
 const itemSchema = z.object({
   id: z.string().max(120),
-  name: z.string().max(160),
-  type: z.string().max(80),
-  price: z.number().nonnegative().optional(),
   qty: z.number().int().min(1).max(20),
 })
 const persistedSchema = z
@@ -36,15 +30,16 @@ const migrate = (persisted: unknown) => {
   const parsed = persistedSchema.safeParse(persisted)
   if (!parsed.success) return { items: [] }
   return {
-    items: parsed.data.state.items
-      .slice(0, 30)
-      .map((item) => ({ ...item, qty: Math.min(20, Math.max(1, item.qty)) })),
+    items: parsed.data.state.items.slice(0, 30).map((item) => ({
+      id: item.id,
+      qty: Math.min(20, Math.max(1, item.qty)),
+    })),
   }
 }
 
 type EnquiryState = {
   items: EnquiryItem[]
-  addItem: (item: Omit<EnquiryItem, 'qty'> & { qty?: number }) => void
+  addItem: (item: Pick<EnquiryItem, 'id'> & { qty?: number }) => void
   updateQty: (id: string, qty: number) => void
   removeItem: (id: string) => void
   clear: () => void
@@ -68,7 +63,10 @@ export const useEnquiryStore = create<EnquiryState>()(
           return {
             items: [
               ...state.items,
-              { ...item, qty: Math.min(20, Math.max(1, item.qty ?? 1)) },
+              {
+                id: item.id,
+                qty: Math.min(20, Math.max(1, item.qty ?? 1)),
+              },
             ],
           }
         }),
@@ -92,7 +90,7 @@ export const useEnquiryStore = create<EnquiryState>()(
     {
       name: 'bagaicha-enquiry',
       storage: safeStorage,
-      version: 1,
+      version: 2,
       migrate,
       partialize: (state) => ({ items: state.items.slice(0, 30) }),
     },

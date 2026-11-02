@@ -23,8 +23,10 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { useEnquiryStore } from '@/store/enquiry'
-import { buildWhatsAppUrl } from '@/lib/whatsapp'
+import { basketMessage, buildWhatsAppUrl } from '@/lib/whatsapp'
 import { site } from '@/config/site'
+import { bouquets, getActiveOffer, gifts } from '@/lib/content'
+import { formatOfferPrice, getOfferPrice } from '@/lib/pricing'
 
 const greeting =
   "Namaste Bagaicha Flower Decor! I'd like to enquire about your decoration services."
@@ -83,8 +85,24 @@ function Brand() {
 
 function EnquiryBasket() {
   const { items, updateQty, removeItem } = useEnquiryStore()
+  const activeOffer = getActiveOffer(new Date())
+  const products = [...bouquets, ...gifts]
+  const resolvedItems = items.flatMap((item) => {
+    const product = products.find((candidate) => candidate.id === item.id)
+    if (!product) return []
+    return [
+      {
+        ...item,
+        name: product.name,
+        type: product.category,
+        price: getOfferPrice(product, activeOffer),
+      },
+    ]
+  })
   const count = items.reduce((total, item) => total + item.qty, 0)
-  const message = `Namaste Bagaicha Flower Decor! I'd like to enquire about:\n${items.map((item, index) => `${index + 1}. ${item.name} x ${item.qty}${item.price ? ` - Rs. ${item.price}` : ''}`).join('\n')}\nPlease let me know availability and delivery details. Thank you!`
+  const message = basketMessage(
+    resolvedItems.map((item) => ({ ...item, offer: activeOffer })),
+  )
   return (
     <Sheet>
       <SheetTrigger
@@ -112,7 +130,7 @@ function EnquiryBasket() {
           </SheetDescription>
         </SheetHeader>
         <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-6">
-          {items.length === 0 ? (
+          {resolvedItems.length === 0 ? (
             <div className="flex flex-1 flex-col items-center justify-center text-center">
               <ShoppingBasket
                 className="text-marigold-contrast mb-4 size-8"
@@ -124,14 +142,13 @@ function EnquiryBasket() {
               </p>
             </div>
           ) : (
-            items.map((item) => (
+            resolvedItems.map((item) => (
               <div key={item.id} className="border-line border-b pb-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="font-display text-xl">{item.name}</p>
                     <p className="text-ink/50 text-xs tracking-[.16em] uppercase">
-                      {item.type}
-                      {item.price ? ` · Rs. ${item.price}` : ''}
+                      {item.type} · {formatOfferPrice(item.price, activeOffer)}
                     </p>
                   </div>
                   <button
@@ -351,7 +368,7 @@ export function SiteFooter() {
             </p>
             <div className="text-background/75 flex flex-col gap-3 text-sm">
               <span>Pokhara, Nepal</span>
-              <a href="tel:+9779800000000">+977 980 000 0000</a>
+              <a href={`tel:${site.phone.replace(/\s/g, '')}`}>{site.phone}</a>
               <a href={whatsappUrl(greeting)}>WhatsApp us</a>
               <span>Sun–Fri · 9am–6pm</span>
             </div>
@@ -366,14 +383,6 @@ export function SiteFooter() {
             <span>Instagram · Facebook</span>
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
-            <button
-              type="button"
-              onClick={() =>
-                window.dispatchEvent(new Event('bagaicha:open-privacy-choices'))
-              }
-            >
-              Privacy choices
-            </button>
           </div>
         </div>
       </div>

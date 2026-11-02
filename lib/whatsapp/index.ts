@@ -7,3 +7,4 @@ export {
   productOrderMessage,
   serviceBookingMessage,
 } from './message-templates'
+export type { BasketMessageItem } from './message-templates'

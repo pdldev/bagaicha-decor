@@ -60,8 +60,5 @@ export type Testimonial = { quote: string; name: string; event: string }
 export type Faq = { question: string; answer: string }
 export type EnquiryItem = {
   id: string
-  name: string
-  type: string
-  price?: number
   qty: number
 }

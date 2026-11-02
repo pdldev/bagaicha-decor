@@ -5,8 +5,10 @@ const envSchema = z.object({
     .string()
     .trim()
     .min(1)
-    .default('9779812345678'),
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+    .default('9779869552940'),
+  NODE_ENV: z
+    .enum(['development', 'test', 'production'])
+    .default('development'),
 })
 
 export const env = envSchema.parse(process.env)

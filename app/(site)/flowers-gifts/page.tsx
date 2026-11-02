@@ -3,13 +3,23 @@
 import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
 import { Check, ChevronDown, Minus, Plus, Search, X } from 'lucide-react'
-import { bouquets, type Bouquet, type ProductSize } from '@/lib/content'
-import { gifts, type Gift } from '@/lib/content'
+import {
+  bouquets,
+  getActiveOffer,
+  gifts,
+  type Bouquet,
+  type Gift,
+  type Offer,
+  type ProductSize,
+} from '@/lib/content'
 import { useEnquiryStore } from '@/store/enquiry'
 import { buildWhatsAppUrl } from '@/lib/whatsapp'
+import { formatNpr, formatOfferPrice, getOfferPrice } from '@/lib/pricing'
+import { offerQuerySchema } from '@/lib/schemas/offer'
+import Link from 'next/link'
 
 const whatsapp = buildWhatsAppUrl
-const money = (value: number) => `Rs. ${value.toLocaleString('en-IN')}`
+const money = formatNpr
 type Product = Bouquet | Gift
 
 function productMessage(
@@ -18,21 +28,25 @@ function productMessage(
   size = '',
   quantity = 1,
   details = '',
+  offer: Offer | null = null,
 ) {
-  return `Namaste Bagaicha Flower Decor! I'd like to order:\n*${product.name}*${size ? ` (${size})` : ''}\nPrice: ${money(price)}\nQuantity: ${quantity}\nDelivery location: ${details || '____'}\nDelivery date/time: ____\nCard message (optional): ____`
+  const offerPrice = getOfferPrice({ ...product, price }, offer)
+  return `Namaste Bagaicha Flower Decor! I'd like to order:\n*${product.name}*${size ? ` (${size})` : ''}\nPrice: ${formatOfferPrice(offerPrice, offer)}\nQuantity: ${quantity}\nDelivery location: ${details || '____'}\nDelivery date/time: ____\nCard message (optional): ____`
 }
 
 function ProductCard({
   product,
   onOpen,
   onAdded,
+  offer,
 }: {
   product: Product
   onOpen: (product: Product) => void
   onAdded: (name: string) => void
+  offer: Offer | null
 }) {
   const { addItem } = useEnquiryStore()
-  const price = product.price
+  const price = getOfferPrice(product, offer)
   return (
     <article className="group">
       <button
@@ -63,12 +77,24 @@ function ProductCard({
             </h2>
             <p className="text-ink/55 mt-1 text-xs">{product.category}</p>
           </div>
-          <p className="shrink-0 text-sm">{money(price)}</p>
+          <div className="shrink-0 text-right text-sm">
+            {price.discounted && (
+              <del className="text-ink/50 block text-xs">
+                <span className="sr-only">Was </span>
+                {money(price.original)}
+              </del>
+            )}
+            <p className={price.discounted ? 'text-maroon' : ''}>
+              {money(price.final)}
+            </p>
+          </div>
         </div>
       </button>
       <div className="border-line mt-4 flex items-center gap-3 border-t pt-3 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
         <a
-          href={whatsapp(productMessage(product, price))}
+          href={whatsapp(
+            productMessage(product, product.price, '', 1, '', offer),
+          )}
           target="_blank"
           rel="noreferrer"
           className="bg-maroon text-background flex-1 rounded-full px-3 py-2 text-center text-[10px] tracking-[.1em] uppercase"
@@ -77,12 +103,7 @@ function ProductCard({
         </a>
         <button
           onClick={() => {
-            addItem({
-              id: product.id,
-              name: product.name,
-              type: product.category,
-              price,
-            })
+            addItem({ id: product.id })
             onAdded(product.name)
           }}
           className="text-maroon text-[10px] tracking-[.1em] uppercase"
@@ -98,10 +119,12 @@ function QuickView({
   product,
   close,
   onAdded,
+  offer,
 }: {
   product: Product
   close: () => void
   onAdded: (name: string) => void
+  offer: Offer | null
 }) {
   const { addItem } = useEnquiryStore()
   const sizes = 'sizes' in product ? product.sizes : undefined
@@ -110,8 +133,9 @@ function QuickView({
   const [location, setLocation] = useState('')
   const [date, setDate] = useState('')
   const [card, setCard] = useState('')
-  const price = selected?.price ?? product.price
-  const message = `Namaste Bagaicha Flower Decor! I'd like to order:\n*${product.name}*${selected ? ` (${selected.label})` : ''}\nPrice: ${money(price)}\nQuantity: ${qty}\nDelivery location: ${location || '____'}\nDelivery date/time: ${date || '____'}\nCard message (optional): ${card || '____'}`
+  const originalPrice = selected?.price ?? product.price
+  const price = getOfferPrice({ ...product, price: originalPrice }, offer)
+  const message = `Namaste Bagaicha Flower Decor! I'd like to order:\n*${product.name}*${selected ? ` (${selected.label})` : ''}\nPrice: ${formatOfferPrice(price, offer)}\nQuantity: ${qty}\nDelivery location: ${location || '____'}\nDelivery date/time: ${date || '____'}\nCard message (optional): ${card || '____'}`
   return (
     <div
       className="bg-ink/45 fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-6"
@@ -152,15 +176,30 @@ function QuickView({
                 Size
               </p>
               <div className="flex gap-2">
-                {sizes.map((size) => (
-                  <button
-                    key={size.label}
-                    onClick={() => setSelected(size)}
-                    className={`rounded-full border px-4 py-2 text-xs ${selected?.label === size.label ? 'border-maroon bg-maroon text-background' : 'border-line'}`}
-                  >
-                    {size.label} · {money(size.price)}
-                  </button>
-                ))}
+                {sizes.map((size) =>
+                  (() => {
+                    const sizePrice = getOfferPrice(
+                      { ...product, price: size.price },
+                      offer,
+                    )
+                    return (
+                      <button
+                        key={size.label}
+                        onClick={() => setSelected(size)}
+                        className={`rounded-full border px-4 py-2 text-xs ${selected?.label === size.label ? 'border-maroon bg-maroon text-background' : 'border-line'}`}
+                      >
+                        {size.label} ·{' '}
+                        {sizePrice.discounted && (
+                          <del className="mr-1">
+                            <span className="sr-only">Was </span>
+                            {money(sizePrice.original)}
+                          </del>
+                        )}
+                        {money(sizePrice.final)}
+                      </button>
+                    )
+                  })(),
+                )}
               </div>
             </div>
           )}
@@ -209,7 +248,19 @@ function QuickView({
             />
           </div>
           <div className="mt-auto flex items-center justify-between pt-3">
-            <p className="font-display text-3xl">{money(price * qty)}</p>
+            <div className="text-right">
+              {price.discounted && (
+                <del className="text-ink/50 block text-sm">
+                  <span className="sr-only">Was </span>
+                  {money(price.original * qty)}
+                </del>
+              )}
+              <p
+                className={`font-display text-3xl ${price.discounted ? 'text-maroon' : ''}`}
+              >
+                {money(price.final * qty)}
+              </p>
+            </div>
             <div className="flex flex-col items-end gap-2">
               <a
                 href={whatsapp(message)}
@@ -223,9 +274,6 @@ function QuickView({
                 onClick={() => {
                   addItem({
                     id: product.id,
-                    name: product.name,
-                    type: product.category,
-                    price,
                     qty,
                   })
                   onAdded(product.name)
@@ -358,6 +406,7 @@ export default function FlowersGiftsPage() {
   const [sort, setSort] = useState('featured')
   const [selected, setSelected] = useState<Product | null>(null)
   const [toast, setToast] = useState('')
+  const [offer, setOffer] = useState<Offer | null>(null)
   useEffect(() => {
     if (!toast) return
     const timeout = window.setTimeout(() => setToast(''), 3000)
@@ -365,6 +414,17 @@ export default function FlowersGiftsPage() {
   }, [toast])
   const notifyAdded = (name: string) => setToast(name)
   const products = tab === 'bouquets' ? bouquets : gifts
+  useEffect(() => {
+    const queryValue = new URLSearchParams(window.location.search).get('offer')
+    const parsedOfferId = offerQuerySchema.safeParse(queryValue)
+    const activeOffer = getActiveOffer(new Date())
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOffer(
+      parsedOfferId.success && activeOffer?.id === parsedOfferId.data
+        ? activeOffer
+        : null,
+    )
+  }, [])
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
     if (hash === 'gifts' || hash === 'bouquets') {
@@ -381,7 +441,13 @@ export default function FlowersGiftsPage() {
   }, [])
   const changeTab = (next: 'bouquets' | 'gifts') => {
     setTab(next)
-    window.history.replaceState(null, '', `#${next}`)
+    const url = new URL(window.location.href)
+    url.hash = next
+    window.history.replaceState(
+      null,
+      '',
+      `${url.pathname}${url.search}${url.hash}`,
+    )
     setCategory('All')
     setQuery('')
   }
@@ -391,6 +457,7 @@ export default function FlowersGiftsPage() {
         .filter(
           (item) =>
             (category === 'All' || item.category === category) &&
+            (!offer || offer.productIds.includes(item.id)) &&
             (occasion === 'All occasions' ||
               ('occasions' in item
                 ? item.occasions.includes(occasion)
@@ -399,12 +466,12 @@ export default function FlowersGiftsPage() {
         )
         .sort((a, b) =>
           sort === 'low'
-            ? a.price - b.price
+            ? getOfferPrice(a, offer).final - getOfferPrice(b, offer).final
             : sort === 'high'
-              ? b.price - a.price
+              ? getOfferPrice(b, offer).final - getOfferPrice(a, offer).final
               : 0,
         ),
-    [products, category, occasion, query, sort],
+    [products, category, occasion, query, sort, offer],
   )
   return (
     <>
@@ -428,6 +495,23 @@ export default function FlowersGiftsPage() {
           setSort={setSort}
         />
         <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-12">
+          {offer && (
+            <div className="border-line mb-8 flex flex-wrap items-center justify-between gap-3 border-y py-4">
+              <p className="text-sm">
+                <span className="text-maroon font-medium">
+                  {offer.festival} offer:
+                </span>{' '}
+                {offer.discountPercent}% off selected items
+              </p>
+              <Link
+                href="/flowers-gifts"
+                onClick={() => setOffer(null)}
+                className="text-maroon text-xs underline underline-offset-4"
+              >
+                Clear offer
+              </Link>
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
             {filtered.map((product) => (
               <ProductCard
@@ -435,6 +519,7 @@ export default function FlowersGiftsPage() {
                 product={product}
                 onOpen={setSelected}
                 onAdded={notifyAdded}
+                offer={offer}
               />
             ))}
           </div>
@@ -487,6 +572,7 @@ export default function FlowersGiftsPage() {
           product={selected}
           close={() => setSelected(null)}
           onAdded={notifyAdded}
+          offer={offer}
         />
       )}
       {toast && (

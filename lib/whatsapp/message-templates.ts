@@ -1,4 +1,6 @@
 import type { Bouquet, EnquiryItem, Gift, Service } from '@/types/content'
+import type { Offer } from '@/lib/schemas/offer'
+import { formatOfferPrice, type OfferPrice } from '@/lib/pricing'
 
 export function greetingMessage() {
   return "Namaste! I'd like to know more about Bagaicha Flower Decor and Events."
@@ -12,13 +14,21 @@ export function productOrderMessage(product: Pick<Bouquet | Gift, 'name'>) {
   return `Namaste! I'd like to order ${product.name}.`
 }
 
-export function basketMessage(items: EnquiryItem[]) {
+export type BasketMessageItem = Pick<EnquiryItem, 'id' | 'qty'> & {
+  name: string
+  price: OfferPrice
+  offer: Pick<Offer, 'festival' | 'discountPercent'> | null
+}
+
+export function basketMessage(items: BasketMessageItem[]) {
   return `Namaste! I'd like to enquire about:\n${items
     .map(
       (item) =>
-        `- ${item.name} x${item.qty}${item.price ? ` (Rs. ${item.price})` : ''}`,
+        `- ${item.name}: ${formatOfferPrice(item.price, item.offer)} x${item.qty}`,
     )
-    .join('\n')}`
+    .join(
+      '\n',
+    )}\nPlease let me know availability and delivery details. Thank you!`
 }
 
 export function catalogueRequestMessage(serviceName: string) {

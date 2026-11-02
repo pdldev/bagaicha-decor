@@ -45,19 +45,15 @@ export default function PrivacyPage() {
             <h2 className="font-display text-3xl">Browser storage</h2>
             <p className="text-ink/70 mt-3">
               The enquiry shortlist is stored in your browser so it remains
-              available on a later visit. Your analytics choice is also stored
-              there. These features do not create a Bagaicha account or send
-              shortlist contents to our servers.
+              available on a later visit. This feature does not create a
+              Bagaicha account or send shortlist contents to our servers.
             </p>
           </section>
           <section>
-            <h2 className="font-display text-3xl">Optional analytics</h2>
+            <h2 className="font-display text-3xl">Analytics</h2>
             <p className="text-ink/70 mt-3">
-              If you allow analytics, Vercel Analytics receives website usage
-              measurements so we can understand site traffic. Analytics remain
-              disabled if you decline or do not make a choice. You can change
-              your choice at any time using the Privacy choices control at the
-              bottom of the site.
+              We do not use website analytics. No analytics choice is stored in
+              your browser.
             </p>
           </section>
           <section>

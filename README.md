@@ -22,6 +22,7 @@
 
 - **WhatsApp number:** edit `whatsapp` in `config/site.ts`. All WhatsApp links use `buildWhatsAppUrl` from `lib/whatsapp`.
 - **Add a bouquet:** add an item to `data/bouquets.ts`, including its image path, price, category and occasions.
+- **Create a festival offer:** add an entry to `data/offers.ts` with a unique ID, three featured product IDs, and product IDs from `data/bouquets.ts` or `data/gifts.ts`. Set `startsAt` and `endsAt` to ISO date-time strings (UTC, for example `2026-10-01T00:00:00.000Z`); the offer is available only within that window. Set `active: true` to enable it, or `active: false` to switch it off. Prices are calculated from each product's regular price and are never saved as offer prices.
 - **Add a service:** add a service object to `data/services.ts`. The services listing and detail page are generated from that data.
 - **Replace images:** replace the image paths in `data/about.ts`, `data/bouquets.ts`, `data/gifts.ts` and `data/services.ts`. Keep images in `public/` and use the existing `next/image` components.
 

@@ -6,7 +6,7 @@ import {
 } from 'next/font/google'
 import './globals.css'
 import { SiteShell } from '@/components/layout/site-shell'
-import { AnalyticsConsent } from '@/components/shared/analytics-consent'
+import { OfferPopupLoader } from '@/components/shared/offer-popup-loader'
 import { site } from '@/config/site'
 
 const cormorant = Cormorant_Garamond({
@@ -76,7 +76,7 @@ export default function RootLayout({
         className={`${cormorant.variable} ${dmSans.variable} ${devanagari.variable} antialiased`}
       >
         <SiteShell>{children}</SiteShell>
-        <AnalyticsConsent />
+        <OfferPopupLoader />
       </body>
     </html>
   )
