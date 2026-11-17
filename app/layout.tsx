@@ -6,7 +6,6 @@ import {
 } from 'next/font/google'
 import './globals.css'
 import { SiteShell } from '@/components/layout/site-shell'
-import { OfferPopupLoader } from '@/components/shared/offer-popup-loader'
 import { site } from '@/config/site'
 
 const cormorant = Cormorant_Garamond({
@@ -64,7 +63,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: 'light',
-  themeColor: '#FAF6EF',
+  themeColor: '#FFFFFF',
 }
 
 export default function RootLayout({
@@ -76,7 +75,6 @@ export default function RootLayout({
         className={`${cormorant.variable} ${dmSans.variable} ${devanagari.variable} antialiased`}
       >
         <SiteShell>{children}</SiteShell>
-        <OfferPopupLoader />
       </body>
     </html>
   )

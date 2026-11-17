@@ -1,3 +1,5 @@
+import type { StaticImageData } from 'next/image'
+
 export type ServiceCategory =
   'Weddings' | 'Family Rituals' | 'Celebrations' | 'Vehicles'
 export type ProductSize = { label: 'Small' | 'Medium' | 'Large'; price: number }
@@ -27,7 +29,7 @@ export type Bouquet = {
   name: string
   description: string
   price: number
-  image: string
+  image: string | StaticImageData
   category:
     | 'Rose'
     | 'Mixed'

@@ -32,7 +32,17 @@ export const bouquetSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
   price: z.number().nonnegative(),
-  image: z.string().min(1),
+  image: z.union([
+    z.string().min(1),
+    z.object({
+      src: z.string().min(1),
+      height: z.number().positive(),
+      width: z.number().positive(),
+      blurDataURL: z.string().optional(),
+      blurWidth: z.number().positive().optional(),
+      blurHeight: z.number().positive().optional(),
+    }),
+  ]),
   category: z.enum([
     'Rose',
     'Mixed',

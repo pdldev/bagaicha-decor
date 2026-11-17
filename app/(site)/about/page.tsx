@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
 import { WhatsAppButton } from '@/components/shared/whatsapp-button'
-import { aboutStory, numbers, team, values } from '@/data/about'
+import { aboutStory, numbers, values } from '@/data/about'
 
 export const metadata = {
   title: 'About us | Bagaicha Flower Decor and Events',
@@ -37,14 +37,10 @@ function Reveal({
 export default function AboutPage() {
   return (
     <main className="bg-background text-ink overflow-hidden">
-      <section
-        className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16"
-        style={{ paddingTop: '9rem', paddingBottom: '3rem' }}
-      >
+      <section className="mx-auto max-w-7xl px-6 pt-40 pb-16 sm:px-10 md:pt-48 lg:px-16">
         <p className="eyebrow">About us</p>
         <h1 className="font-display mt-5 max-w-5xl text-[clamp(3.6rem,8vw,8.5rem)] leading-[.83] font-light tracking-[-.055em]">
-          Rooted in <em className="text-marigold-contrast">Pokhara,</em> grown
-          with every celebration.
+          Rooted in Pokhara, grown with every celebration.
         </h1>
         <div className="bg-surface relative mt-12 aspect-[16/7] overflow-hidden sm:mt-16">
           <Image
@@ -63,7 +59,7 @@ export default function AboutPage() {
           <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 sm:px-10 lg:grid-cols-[1fr_.72fr] lg:gap-24 lg:px-16 lg:py-28">
             <div>
               <p className="eyebrow">Our story</p>
-              <div className="text-ink/70 mt-10 max-w-xl space-y-6 text-sm leading-7">
+              <div className="text-ink/70 mt-10 max-w-xl space-y-6">
                 {aboutStory.intro.map((paragraph, index) => (
                   <div key={paragraph}>
                     {index === 1 && (
@@ -71,7 +67,7 @@ export default function AboutPage() {
                         &ldquo;{aboutStory.quote}&rdquo;
                       </blockquote>
                     )}
-                    <p>{paragraph}</p>
+                    <p className="text-sm leading-7">{paragraph}</p>
                   </div>
                 ))}
               </div>
@@ -85,6 +81,24 @@ export default function AboutPage() {
                 sizes="(max-width: 1024px) 100vw, 40vw"
               />
             </div>
+          </div>
+        </section>
+      </Reveal>
+
+      <Reveal>
+        <section className="section-brand border-y">
+          <div className="mx-auto grid max-w-7xl grid-cols-2 px-6 py-10 sm:px-10 lg:grid-cols-4 lg:px-16">
+            {numbers.map(([number, label], index) => (
+              <div
+                key={label}
+                className={`py-4 ${index % 2 === 1 ? 'pl-5 sm:pl-8' : ''} ${index >= 2 ? 'border-line border-t' : ''} ${index > 0 ? 'lg:border-t-0 lg:border-l lg:pl-8' : ''}`}
+              >
+                <span className="font-display text-4xl sm:text-5xl">
+                  {number}
+                </span>
+                <p className="eyebrow mt-2">{label}</p>
+              </div>
+            ))}
           </div>
         </section>
       </Reveal>
@@ -117,62 +131,6 @@ export default function AboutPage() {
       </Reveal>
 
       <Reveal>
-        <section className="border-line bg-surface border-y">
-          <div className="mx-auto grid max-w-7xl grid-cols-2 px-6 py-10 sm:px-10 lg:grid-cols-4 lg:px-16">
-            {numbers.map(([number, label], index) => (
-              <div
-                key={label}
-                className={`py-4 ${index % 2 === 1 ? 'pl-5 sm:pl-8' : ''} ${index > 1 ? 'border-line border-t lg:border-t-0 lg:border-l lg:pl-8' : ''}`}
-              >
-                <p className="font-display text-4xl leading-none font-light sm:text-5xl">
-                  {number}
-                </p>
-                <p className="text-ink/55 mt-2 text-[10px] tracking-[.16em] uppercase">
-                  {label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-      </Reveal>
-
-      <Reveal>
-        <section className="mx-auto max-w-7xl px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
-          <div className="mb-12 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-            <div>
-              <p className="eyebrow">The team</p>
-              <h2 className="section-title">The hands behind the blooms.</h2>
-            </div>
-            <p className="text-ink/60 max-w-xs text-sm leading-6">
-              A small, thoughtful team making room for the details that make
-              your day feel like yours.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-4 sm:gap-5">
-            {team.map((person) => (
-              <article key={person.role}>
-                <div className="bg-surface relative aspect-[4/5] overflow-hidden rounded-t-[50%]">
-                  <Image
-                    src={person.image}
-                    alt={`${person.name}, ${person.role}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 640px) 50vw, 25vw"
-                  />
-                </div>
-                <h3 className="font-display mt-4 text-2xl leading-none">
-                  {person.name}
-                </h3>
-                <p className="text-ink/55 mt-2 text-[10px] tracking-[.14em] uppercase">
-                  {person.role}
-                </p>
-              </article>
-            ))}
-          </div>
-        </section>
-      </Reveal>
-
-      <Reveal>
         <section className="border-line border-y">
           <div className="mx-auto grid max-w-7xl gap-8 px-6 py-16 sm:px-10 lg:grid-cols-[.75fr_1.25fr] lg:items-center lg:px-16 lg:py-20">
             <div>
@@ -182,11 +140,11 @@ export default function AboutPage() {
               </h2>
             </div>
             <div>
-              <p className="text-ink/75 max-w-2xl text-lg leading-8">
+              <p className="text-ink/75 max-w-2xl text-sm leading-7">
                 We serve Pokhara, Lekhnath, Sarangkot and Lakeside, and travel
                 for destination events wherever your celebration takes us.
               </p>
-              <div className="border-line text-ink/55 mt-8 flex flex-wrap gap-x-7 gap-y-3 border-t pt-5 text-[10px] tracking-[.18em] uppercase">
+              <div className="border-line text-ink/55 mt-8 flex flex-wrap gap-x-7 gap-y-3 border-t pt-5 text-xs tracking-[.14em] uppercase">
                 <span>Pokhara</span>
                 <span>Lekhnath</span>
                 <span>Sarangkot</span>
@@ -198,18 +156,17 @@ export default function AboutPage() {
         </section>
       </Reveal>
 
-      <section className="bg-sage text-background">
+      <section className="section-brand">
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 px-6 py-16 sm:px-10 lg:flex-row lg:items-center lg:px-16 lg:py-24">
           <div>
-            <p className="text-background/60 text-[10px] tracking-[.24em] uppercase">
-              Let&apos;s make something lovely
-            </p>
-            <h2 className="font-display mt-5 max-w-2xl text-5xl leading-[.88] font-light tracking-[-.04em] sm:text-7xl">
+            <p className="eyebrow">Let&apos;s make something lovely</p>
+            <h2 className="font-display text-background mt-5 max-w-2xl text-5xl leading-[.88] font-light tracking-[-.04em] sm:text-7xl">
               Tell us what you&apos;re celebrating.
             </h2>
           </div>
           <WhatsAppButton
             message="Namaste! I'd like to know more about Bagaicha Flower Decor and Events."
+            variant="outline"
             className="border-background text-background hover:bg-background hover:text-sage"
           >
             Start a conversation <ArrowUpRight className="ml-2 size-4" />

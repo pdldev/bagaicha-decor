@@ -27,10 +27,10 @@ export function WhatsAppButton({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'focus-visible:outline-maroon inline-flex min-h-11 items-center justify-center rounded-[2px] border px-5 text-[11px] font-medium tracking-[0.16em] uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-4',
+        'brand-button-primary inline-flex min-h-11 items-center justify-center rounded-[2px] border px-5 text-[11px] font-medium tracking-[0.16em] uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-4',
         variant === 'primary'
-          ? 'border-maroon bg-maroon text-background hover:bg-ink hover:border-ink'
-          : 'border-ink text-ink hover:bg-ink hover:text-background',
+          ? 'border-brand-green bg-brand-green text-brand-white hover:bg-brand-green-deep hover:border-brand-green-deep'
+          : 'border-ink text-ink hover:bg-ink hover:text-brand-white bg-transparent',
         className,
       )}
     >

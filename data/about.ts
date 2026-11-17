@@ -26,6 +26,13 @@ export const values = [
   },
 ] as const
 
+export const numbers = [
+  ['500+', 'events decorated'],
+  ['4+', 'years'],
+  ['100%', 'client satisfaction'],
+  ['Pokhara', '& beyond'],
+] as const
+
 export const team = [
   {
     name: '[Name]',
@@ -35,11 +42,4 @@ export const team = [
   { name: '[Name]', role: 'Floral stylist', image: '/placeholder.jpg' },
   { name: '[Name]', role: 'Events & operations', image: '/placeholder.jpg' },
   { name: '[Name]', role: 'Decor assistant', image: '/placeholder.jpg' },
-] as const
-
-export const numbers = [
-  ['[500]+', 'events decorated'],
-  ['[8]+', 'years'],
-  ['[100%]', 'fresh flowers'],
-  ['Pokhara', '& beyond'],
 ] as const

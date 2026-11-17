@@ -1,8 +1,8 @@
 'use client'
 
 import Image from 'next/image'
-import { useMemo, useState } from 'react'
-import { X } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { ArrowLeft, ArrowRight, X } from 'lucide-react'
 
 const galleryCategories = [
   'Weddings',
@@ -41,6 +41,29 @@ export default function GalleryPage() {
   const selectedImage =
     lightboxIndex !== null ? visibleGallery[lightboxIndex]?.src : null
 
+  useEffect(() => {
+    if (lightboxIndex === null) return
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setLightboxIndex(null)
+      } else if (event.key === 'ArrowLeft') {
+        setLightboxIndex((index) =>
+          index === null
+            ? null
+            : (index - 1 + visibleGallery.length) % visibleGallery.length,
+        )
+      } else if (event.key === 'ArrowRight') {
+        setLightboxIndex((index) =>
+          index === null ? null : (index + 1) % visibleGallery.length,
+        )
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [lightboxIndex, visibleGallery.length])
+
   return (
     <main className="bg-background text-ink overflow-hidden">
       <section className="mx-auto max-w-7xl px-6 pt-36 pb-16 sm:px-10 lg:px-16 lg:pb-20">
@@ -69,6 +92,7 @@ export default function GalleryPage() {
             <button
               key={`${item.src}-${index}`}
               onClick={() => setLightboxIndex(index)}
+              aria-label={`Open image ${index + 1}`}
               className={`bg-surface relative overflow-hidden text-left ${index === 0 || index === 5 ? 'aspect-[3/4]' : 'aspect-square'} ${index === 2 ? 'sm:col-span-2' : ''}`}
             >
               <Image
@@ -92,15 +116,44 @@ export default function GalleryPage() {
           onClick={() => setLightboxIndex(null)}
         >
           <button
+            type="button"
             aria-label="Close gallery"
             className="text-background absolute top-5 right-5"
             onClick={() => setLightboxIndex(null)}
           >
             <X className="size-7" />
           </button>
+          <button
+            type="button"
+            aria-label="Previous image"
+            className="text-background absolute top-1/2 left-3 -translate-y-1/2 p-3 sm:left-6"
+            onClick={(event) => {
+              event.stopPropagation()
+              setLightboxIndex((index) =>
+                index === null
+                  ? null
+                  : (index - 1 + visibleGallery.length) % visibleGallery.length,
+              )
+            }}
+          >
+            <ArrowLeft aria-hidden="true" className="size-7 sm:size-9" />
+          </button>
+          <button
+            type="button"
+            aria-label="Next image"
+            className="text-background absolute top-1/2 right-3 -translate-y-1/2 p-3 sm:right-6"
+            onClick={(event) => {
+              event.stopPropagation()
+              setLightboxIndex((index) =>
+                index === null ? null : (index + 1) % visibleGallery.length,
+              )
+            }}
+          >
+            <ArrowRight aria-hidden="true" className="size-7 sm:size-9" />
+          </button>
           <Image
             src={selectedImage}
-            alt="Expanded gallery image"
+            alt={`Expanded gallery image ${(lightboxIndex ?? 0) + 1}`}
             width={1200}
             height={900}
             className="max-h-[85vh] w-auto object-contain"

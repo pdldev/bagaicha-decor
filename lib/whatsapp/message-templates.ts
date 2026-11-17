@@ -44,6 +44,17 @@ export function contactFormMessage(input: {
   return `Namaste! I'm ${input.name}. I'd like to enquire about ${input.eventType}.\nPhone: ${input.phone}\n${input.message}`
 }
 
+export function contactEnquiryMessage(input: {
+  name: string
+  phone: string
+  eventType: string
+  date: string
+  venue: string
+  message: string
+}) {
+  return `Namaste! I'm ${input.name}. I'd like to enquire about ${input.eventType}.\nDate: ${input.date}\nVenue: ${input.venue}\nPhone: ${input.phone}\n${input.message}`
+}
+
 export const whatsappMessages = {
   greeting: greetingMessage,
   serviceBooking: serviceBookingMessage,
@@ -51,4 +62,5 @@ export const whatsappMessages = {
   basket: basketMessage,
   catalogueRequest: catalogueRequestMessage,
   contactForm: contactFormMessage,
+  contactEnquiry: contactEnquiryMessage,
 }

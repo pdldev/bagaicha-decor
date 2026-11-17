@@ -8,8 +8,14 @@
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-brand-green: var(--brand-green);
+  --color-brand-green-deep: var(--brand-green-deep);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-gold-ink: var(--brand-gold-ink);
+  --color-brand-white: var(--brand-white);
   --color-marigold: var(--marigold);
-  --color-marigold-contrast: var(--marigold-contrast);
+  --color-marigold-contrast: var(--brand-gold-ink);
   --color-maroon: var(--maroon);
   --color-sage: var(--sage);
   --color-line: var(--line);
@@ -17,14 +23,19 @@
 
 :root {
   color-scheme: light;
-  --background: #faf6ef;
-  --surface: #f2eadd;
-  --ink: #2a211c;
-  --marigold: #d98e04;
-  --marigold-contrast: #a15e00;
-  --maroon: #7b2d3b;
-  --sage: #3e5642;
-  --line: #dccfbb;
+  --background: #ffffff;
+  --surface: #f7f8f7;
+  --ink: #14201a;
+  --ink-muted: #5b6660;
+  --line: #e4e7e5;
+  --brand-green: #006030;
+  --brand-green-deep: #004a24;
+  --brand-gold: #f8c800;
+  --brand-gold-ink: #8a6500;
+  --brand-white: #fcfcfc;
+  --marigold: var(--brand-gold);
+  --maroon: var(--brand-green);
+  --sage: var(--brand-green-deep);
 }
 
 * {
@@ -39,26 +50,6 @@ body {
   position: relative;
   overflow-x: hidden;
 }
-body::before {
-  content: '';
-  position: fixed;
-  inset: -25%;
-  background:
-    radial-gradient(
-      circle at 15% 20%,
-      rgba(217, 142, 4, 0.12),
-      transparent 22%
-    ),
-    radial-gradient(
-      circle at 80% 10%,
-      rgba(123, 45, 59, 0.12),
-      transparent 24%
-    ),
-    radial-gradient(circle at 55% 65%, rgba(62, 86, 66, 0.08), transparent 28%);
-  pointer-events: none;
-  z-index: 0;
-  animation: driftGlow 16s ease-in-out infinite alternate;
-}
 ::view-transition-old(page),
 ::view-transition-new(page) {
   animation-duration: 180ms;
@@ -68,15 +59,19 @@ body {
   background-color: var(--background);
   color: var(--ink);
   font-family: var(--font-dm-sans), sans-serif;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
 }
 body > * {
   position: relative;
   z-index: 1;
 }
+@layer base {
+  a {
+    color: var(--brand-green);
+  }
+}
 ::selection {
-  background: var(--marigold);
-  color: var(--ink);
+  background: var(--brand-gold);
+  color: var(--brand-green-deep);
 }
 img,
 svg,
@@ -115,14 +110,6 @@ button:hover {
     clip-path: inset(0);
   }
 }
-@keyframes driftGlow {
-  0% {
-    transform: translate3d(-2%, 0, 0) scale(1);
-  }
-  100% {
-    transform: translate3d(2%, 2%, 0) scale(1.08);
-  }
-}
 @keyframes floatSlow {
   0%,
   100% {
@@ -132,42 +119,102 @@ button:hover {
     transform: translateY(-8px);
   }
 }
-@keyframes pulseSoft {
-  0%,
-  100% {
-    box-shadow: 0 0 0 rgba(217, 142, 4, 0);
-  }
-  50% {
-    box-shadow: 0 0 28px rgba(217, 142, 4, 0.16);
-  }
-}
-.parallax-hero {
-  transform: translateY(-2%);
-  scale: 1.04;
-}
 .animate-float {
   animation: floatSlow 6s ease-in-out infinite;
-}
-.animate-pulse-soft {
-  animation: pulseSoft 3.2s ease-in-out infinite;
 }
 .font-devanagari {
   font-family: var(--font-devanagari), serif;
 }
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--marigold-contrast);
+  outline: 2px solid var(--brand-gold-ink);
   outline-offset: 4px;
+}
+.shop-catalogue
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible,
+.shop-quick-view
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline-color: var(--brand-gold);
+}
+.section-brand {
+  background-color: var(--brand-green);
+  color: var(--brand-white);
+}
+.section-brand-deep {
+  background-color: var(--brand-green-deep);
+  color: var(--brand-white);
+}
+.section-brand .eyebrow,
+.section-brand-deep .eyebrow {
+  color: var(--brand-gold);
+}
+.section-brand a:not(.brand-button-primary),
+.section-brand-deep a:not(.brand-button-primary) {
+  color: var(--brand-white);
+}
+.section-brand .section-title,
+.section-brand-deep .section-title {
+  color: var(--brand-white);
+}
+.section-brand .section-title em,
+.section-brand-deep .section-title em {
+  color: var(--brand-gold);
+  font-style: italic;
+}
+.section-brand .section-title::after,
+.section-brand-deep .section-title::after {
+  display: block;
+  height: 1px;
+  margin-top: 1.5rem;
+  background: var(--brand-gold);
+  content: '';
+}
+.section-brand
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible,
+.section-brand-deep
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline-color: #ffffff;
+}
+.section-brand .brand-button-primary,
+.section-brand-deep .brand-button-primary,
+.section-brand [data-slot='button'][data-variant='default'],
+.section-brand-deep [data-slot='button'][data-variant='default'] {
+  border-color: var(--brand-gold);
+  background-color: var(--brand-gold);
+  color: var(--brand-green-deep);
+}
+.section-brand .brand-button-primary:hover,
+.section-brand-deep .brand-button-primary:hover,
+.section-brand [data-slot='button'][data-variant='default']:hover,
+.section-brand-deep [data-slot='button'][data-variant='default']:hover {
+  border-color: #ffd83a;
+  background-color: #ffd83a;
+}
+.rule-gold {
+  height: 1px;
+  background: var(--brand-gold);
+}
+.text-gold-on-white {
+  color: var(--brand-gold-ink);
+}
+.eyebrow-rule::before {
+  display: block;
+  width: 40px;
+  height: 1px;
+  margin-bottom: 0.75rem;
+  background: var(--brand-gold);
+  content: '';
 }
 .eyebrow {
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--maroon);
+  color: var(--brand-green);
 }
 .section-title {
   margin-top: 14px;
   font-family: var(--font-cormorant), serif;
+  color: var(--ink);
   font-size: clamp(2.7rem, 5vw, 4.8rem);
   font-weight: 300;
   line-height: 0.9;
@@ -177,6 +224,182 @@ button:hover {
   animation: fade-up 0.8s both;
   animation-timeline: view();
   animation-range: entry 0% cover 28%;
+}
+.motion-line-mask {
+  display: block;
+  overflow: hidden;
+}
+.motion-line {
+  display: block;
+}
+.motion-enabled [data-motion]:not(.motion-visible) {
+  opacity: 0;
+}
+.motion-enabled [data-motion].motion-skip {
+  animation: none !important;
+  clip-path: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+.motion-finished {
+  animation: none !important;
+  clip-path: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+.motion-enabled .motion-line:not(.motion-visible) {
+  opacity: 0;
+  transform: translateY(24px);
+}
+.motion-enabled .motion-label-clip:not(.motion-visible) {
+  clip-path: inset(0 100% 0 0);
+}
+.motion-label-clip.motion-visible {
+  animation: motion-reveal-left 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.motion-line.motion-visible,
+.motion-copy.motion-visible {
+  animation: motion-rise 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.motion-number.motion-visible {
+  animation: motion-fade 300ms ease-out both;
+}
+.motion-stagger-child {
+  animation-delay: var(--delay, 0ms);
+}
+.motion-enabled .motion-copy:not(.motion-visible) {
+  transform: translateY(16px);
+}
+.motion-enabled .motion-draw-line:not(.motion-visible) {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.motion-divider {
+  position: absolute;
+  top: -1px;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--line);
+}
+.motion-draw-line.motion-visible.motion-divider {
+  animation: motion-draw 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+.motion-timeline-line {
+  z-index: 0;
+  transform-origin: left center;
+}
+.motion-timeline-line.motion-visible {
+  animation: motion-draw 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.motion-enabled .motion-step-dot:not(.motion-visible) {
+  transform: scale(0);
+  transform-origin: center;
+}
+.motion-step-dot.motion-visible {
+  animation: motion-dot 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.motion-enabled .motion-image-frame {
+  clip-path: inset(0 0 100% 0);
+}
+.motion-image-frame {
+  clip-path: none;
+  animation: none;
+}
+.motion-image-frame.motion-visible {
+  animation: motion-reveal-down 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.motion-enabled .motion-image-scale {
+  transform: scale(1.04);
+}
+.motion-image-frame.motion-visible .motion-image-scale {
+  animation: motion-image-scale 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.motion-image-frame.motion-skip .motion-image-scale {
+  animation: none !important;
+  transform: none !important;
+}
+.motion-image-frame.motion-image-finished .motion-image-scale {
+  animation: none !important;
+  transform: none !important;
+}
+@keyframes motion-reveal-left {
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes motion-reveal-down {
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes motion-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes motion-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes motion-draw {
+  to {
+    transform: none;
+  }
+}
+@keyframes motion-dot {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes motion-image-scale {
+  to {
+    transform: none;
+  }
+}
+.motion-visible.motion-stagger-child {
+  animation-delay: var(--delay, 0ms);
+}
+.process-arrow {
+  animation: process-arrow 0.65s ease-out both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 30%;
+}
+.process-copy {
+  animation: fade-up 0.65s both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 35%;
+}
+@keyframes process-arrow {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(32px);
+  }
+}
+@keyframes process-arrow-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(12px);
+  }
 }
 @keyframes fade-up {
   from {
@@ -191,13 +414,59 @@ button:hover {
 @media (prefers-reduced-motion: reduce) {
   .reveal,
   .clip-reveal,
-  .animate-float,
-  .animate-pulse-soft,
-  body::before {
+  .process-arrow,
+  .process-copy,
+  .animate-float {
     animation: none;
   }
-  .parallax-hero {
-    transform: none;
-    scale: 1;
+  [data-motion],
+  .motion-line,
+  .motion-image-frame,
+  .motion-image-scale,
+  .motion-draw-line,
+  .motion-step-dot {
+    clip-path: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  .reveal,
+  .clip-reveal,
+  .process-arrow,
+  .process-copy {
+    clip-path: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+@media (max-width: 639px) {
+  .motion-timeline-line {
+    top: 5px;
+    right: auto;
+    bottom: 0;
+    left: 4px;
+    width: 1px;
+    height: auto;
+  }
+  html.motion-enabled .motion-timeline-line:not(.motion-visible) {
+    transform: scaleY(0);
+    transform-origin: center top;
+  }
+  .motion-timeline-line.motion-visible {
+    animation-name: motion-draw-vertical;
+  }
+  .motion-step-dot.motion-visible {
+    animation-delay: 0ms;
+  }
+  .motion-number.motion-visible {
+    animation-delay: 0ms;
+  }
+  .motion-copy.motion-visible {
+    animation-delay: 150ms;
+  }
+  @keyframes motion-draw-vertical {
+    to {
+      transform: none;
+    }
   }
 }

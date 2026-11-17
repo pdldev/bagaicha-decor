@@ -12,6 +12,7 @@ import { CatalogueDownloadCard } from '@/components/services/catalogue-download-
 import { buildWhatsAppUrl } from '@/lib/whatsapp'
 import { services, type Service } from '@/lib/content'
 import type { ServiceCatalogue } from '@/types/content'
+import { SectionHeading } from '@/components/ui/section-heading'
 
 const schema = z.object({
   date: z.string().min(1, 'Please choose a date.'),
@@ -39,6 +40,7 @@ export function ServiceDetail({
     const message = `Namaste Bagaicha Flower Decor! I'd like to book *${service.name}*.\nDate: ${values.date}\nVenue: ${values.venue}\nGuests: ${values.guests || 'Not decided'}\nBudget: ${values.budget || 'Not decided'}\nTheme/Colours: ${values.theme || 'Open to ideas'}\nPlease share ideas and a quote.`
     window.open(buildWhatsAppUrl(message), '_blank', 'noopener,noreferrer')
   }
+  const serviceNameWords = service.name.split(' ')
   return (
     <main className="bg-background text-ink overflow-hidden">
       <section className="bg-surface relative mx-auto mt-24 min-h-[65vh] max-w-[1400px] sm:mt-28">
@@ -50,29 +52,25 @@ export function ServiceDetail({
           className="object-cover"
           sizes="100vw"
         />
-        <div className="from-ink/80 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
         <div className="text-background absolute inset-x-0 bottom-0 p-6 sm:p-12 lg:p-16">
           <Link
             href="/services"
-            className="text-background/75 mb-8 inline-flex items-center text-[10px] tracking-[.18em] uppercase"
+            className="text-background/75 mb-8 inline-flex items-center text-xs tracking-[.12em] uppercase"
           >
             <ArrowLeft className="mr-2 size-3" /> All services
           </Link>
-          <p className="text-background/70 text-[10px] tracking-[.22em] uppercase">
-            {service.category}
-          </p>
-          <h1 className="font-display mt-4 max-w-3xl text-6xl leading-[.85] font-light tracking-[-.05em]">
-            {service.name}
+          <p className="eyebrow text-background">{service.category}</p>
+          <h1 className="font-display text-background mt-4 max-w-3xl text-6xl leading-[.85] font-light tracking-[-.05em]">
+            {serviceNameWords.slice(0, -1).join(' ')}{' '}
+            <em>{serviceNameWords[serviceNameWords.length - 1]}</em>
           </h1>
         </div>
       </section>
       <section className="mx-auto grid max-w-7xl gap-12 px-6 py-20 sm:px-10 lg:grid-cols-[.72fr_1.28fr] lg:gap-24 lg:px-16 lg:py-28">
         <div>
           <p className="eyebrow">The details</p>
-          <p className="text-maroon mt-6 text-[10px] tracking-[.18em] uppercase">
-            Ideal for
-          </p>
-          <p className="text-ink/65 mt-3 max-w-xs text-sm leading-6">
+          <p className="eyebrow text-maroon mt-6">Ideal for</p>
+          <p className="text-ink/65 mt-3 max-w-xs text-base leading-7">
             {service.idealFor}
           </p>
         </div>
@@ -107,11 +105,11 @@ export function ServiceDetail({
           </div>
         </section>
       ) : null}
-      <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-16 lg:pb-28">
-        <div className="mb-8">
-          <p className="eyebrow">A closer look</p>
-          <h2 className="section-title">Made for your photographs.</h2>
-        </div>
+      <section className="mx-auto max-w-7xl px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+        <p className="eyebrow">A closer look</p>
+        <SectionHeading className="mb-8">
+          Made for your <em>photographs.</em>
+        </SectionHeading>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {service.gallery.map((image, index) => (
             <button
@@ -135,9 +133,10 @@ export function ServiceDetail({
           <div>
             <p className="eyebrow">Start a conversation</p>
             <h2 className="font-display mt-5 max-w-sm text-5xl leading-[.88] font-light">
-              Plan your {service.name.toLowerCase()}.
+              Plan your <em>{serviceNameWords[serviceNameWords.length - 1]}</em>
+              .
             </h2>
-            <p className="text-ink/60 mt-6 text-sm leading-6">
+            <p className="text-ink/60 mt-6 text-base leading-7">
               Share a few details and we&apos;ll reply with ideas and a
               thoughtful quote.
             </p>
@@ -185,7 +184,7 @@ export function ServiceDetail({
             ).map((field) => (
               <label
                 key={field.name}
-                className={`flex flex-col gap-2 text-[10px] tracking-[.16em] uppercase ${field.name === 'theme' ? 'sm:col-span-2' : ''}`}
+                className={`flex flex-col gap-2 text-xs tracking-[.12em] uppercase ${field.name === 'theme' ? 'sm:col-span-2' : ''}`}
               >
                 {field.label}
                 <input
@@ -198,24 +197,24 @@ export function ServiceDetail({
                       : undefined
                   }
                   placeholder={field.placeholder}
-                  className="border-line placeholder:text-ink/35 focus:border-maroon border-b bg-transparent py-3 text-sm tracking-normal normal-case outline-none"
+                  className="border-line placeholder:text-ink/35 focus:border-maroon border-b bg-transparent py-3 text-base normal-case outline-none"
                 />
                 {errors[field.name] && (
                   <span
                     id={`service-${field.name}-error`}
                     role="alert"
-                    className="text-maroon text-xs tracking-normal normal-case"
+                    className="text-maroon text-xs normal-case"
                   >
                     {errors[field.name]?.message}
                   </span>
                 )}
               </label>
             ))}
-            <label className="flex flex-col gap-2 text-[10px] tracking-[.16em] uppercase">
+            <label className="flex flex-col gap-2 text-xs tracking-[.12em] uppercase">
               Budget range
               <select
                 {...register('budget')}
-                className="border-line focus:border-maroon border-b bg-transparent py-3 text-sm tracking-normal normal-case outline-none"
+                className="border-line focus:border-maroon border-b bg-transparent py-3 text-base normal-case outline-none"
               >
                 <option value="">Choose a range</option>
                 <option>Under Rs. 25,000</option>
@@ -226,7 +225,7 @@ export function ServiceDetail({
             </label>
             <button
               type="submit"
-              className="bg-maroon text-background hover:bg-ink mt-3 inline-flex w-fit items-center px-5 py-3 text-[10px] tracking-[.17em] uppercase transition-colors"
+              className="bg-maroon text-background hover:bg-brand-green-deep mt-3 inline-flex w-fit items-center rounded-[2px] px-5 py-3 text-xs tracking-[.14em] uppercase transition-colors"
             >
               Send on WhatsApp <ArrowUpRight className="ml-2 size-3" />
             </button>

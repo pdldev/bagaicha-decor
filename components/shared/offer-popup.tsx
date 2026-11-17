@@ -74,7 +74,7 @@ export default function OfferPopup() {
         <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/45 transition-opacity duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none" />
         <Dialog.Popup
           aria-labelledby="festival-offer-title"
-          className="bg-background fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] w-full overflow-y-auto rounded-t-2xl p-5 shadow-2xl transition-opacity duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none sm:inset-auto sm:top-1/2 sm:left-1/2 sm:max-h-[90dvh] sm:w-[min(92vw,900px)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl sm:p-8"
+          className="bg-background fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] w-full overflow-y-auto rounded-t-2xl p-5 transition-opacity duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none sm:inset-auto sm:top-1/2 sm:left-1/2 sm:max-h-[90dvh] sm:w-[min(92vw,900px)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl sm:p-8"
         >
           <div className="relative mb-5 aspect-[16/5] overflow-hidden">
             <Image
@@ -139,7 +139,7 @@ export default function OfferPopup() {
                 trackEvent('offer_shop_now_click', { offer_id: offer.id })
                 setOpen(false)
               }}
-              className="bg-maroon text-background w-full rounded-full px-6 py-3 text-center text-xs tracking-[.1em] uppercase sm:w-auto"
+              className="bg-maroon text-background w-full rounded-[2px] px-6 py-3 text-center text-xs tracking-[.1em] uppercase sm:w-auto"
             >
               Shop now
             </Link>

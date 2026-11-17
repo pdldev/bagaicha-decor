@@ -1,8 +1,8 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useMemo, useState } from 'react'
-import { Check, ChevronDown, Minus, Plus, Search, X } from 'lucide-react'
+import { useDeferredValue, useEffect, useMemo, useState } from 'react'
+import { Check, ChevronDown, Search, X } from 'lucide-react'
 import {
   bouquets,
   getActiveOffer,
@@ -10,13 +10,14 @@ import {
   type Bouquet,
   type Gift,
   type Offer,
-  type ProductSize,
 } from '@/lib/content'
 import { useEnquiryStore } from '@/store/enquiry'
 import { buildWhatsAppUrl } from '@/lib/whatsapp'
 import { formatNpr, formatOfferPrice, getOfferPrice } from '@/lib/pricing'
 import { offerQuerySchema } from '@/lib/schemas/offer'
 import Link from 'next/link'
+import { SectionHeading } from '@/components/ui/section-heading'
+import { QuickView } from '@/components/flowers-gifts/quick-view'
 
 const whatsapp = buildWhatsAppUrl
 const money = formatNpr
@@ -46,67 +47,83 @@ function ProductCard({
   offer: Offer | null
 }) {
   const { addItem } = useEnquiryStore()
-  const price = getOfferPrice(product, offer)
+  const price = product.price == null ? null : getOfferPrice(product, offer)
+  const soldOut = 'inStock' in product && !product.inStock
+  const image = product.image
+  const blurDataURL = typeof image === 'string' ? undefined : image.blurDataURL
+  const isGift = 'tags' in product
   return (
-    <article className="group">
+    <article
+      className={`group ${isGift ? 'border-line border p-3 sm:p-4' : ''}`}
+    >
       <button
-        className="block w-full text-left"
+        type="button"
+        className="focus-visible:outline-brand-gold block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2"
         onClick={() => onOpen(product)}
         aria-label={`View ${product.name}`}
       >
+        {soldOut && (
+          <span className="text-ink-muted mb-2 block text-left text-xs tracking-[.12em] uppercase">
+            Sold out
+          </span>
+        )}
         <div className="bg-surface relative aspect-[4/5] overflow-hidden">
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            sizes="(max-width: 768px) 50vw, 25vw"
-            className="pointer-events-none object-cover transition-transform duration-700 group-hover:scale-105"
-          />
-          <div className="absolute top-3 left-3 flex gap-2">
-            {'inStock' in product && !product.inStock && (
-              <span className="bg-background px-2 py-1 text-[9px] tracking-[.16em] uppercase">
-                Sold out
-              </span>
-            )}
-          </div>
+          {image ? (
+            <Image
+              src={image}
+              alt={`${product.name} — ${product.description}`}
+              fill
+              sizes="(max-width: 639px) calc(50vw - 24px), (max-width: 1023px) calc(50vw - 32px), 384px"
+              placeholder={blurDataURL ? 'blur' : 'empty'}
+              blurDataURL={blurDataURL}
+              className="pointer-events-none object-cover object-center transition-transform duration-700 lg:group-hover:scale-[1.03]"
+            />
+          ) : (
+            <div className="text-ink-muted flex size-full items-center justify-center text-sm">
+              Photo coming soon
+            </div>
+          )}
         </div>
-        <div className="flex items-start justify-between gap-3 pt-4">
-          <div>
-            <h2 className="font-display text-2xl leading-none">
-              {product.name}
-            </h2>
-            <p className="text-ink/55 mt-1 text-xs">{product.category}</p>
-          </div>
-          <div className="shrink-0 text-right text-sm">
+      </button>
+      <button
+        type="button"
+        onClick={() => onOpen(product)}
+        className="focus-visible:outline-brand-gold mt-4 block max-w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2"
+      >
+        <h3 className="font-display text-ink line-clamp-2 text-xl">
+          {product.name}
+        </h3>
+      </button>
+      <div className="font-display text-brand-green mt-2 text-3xl">
+        {price ? (
+          <>
             {price.discounted && (
-              <del className="text-ink/50 block text-xs">
+              <del className="text-ink-muted mr-2 text-xs">
                 <span className="sr-only">Was </span>
                 {money(price.original)}
               </del>
             )}
-            <p className={price.discounted ? 'text-maroon' : ''}>
-              {money(price.final)}
-            </p>
-          </div>
-        </div>
-      </button>
-      <div className="border-line mt-4 flex items-center gap-3 border-t pt-3 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
-        <a
-          href={whatsapp(
-            productMessage(product, product.price, '', 1, '', offer),
-          )}
-          target="_blank"
-          rel="noreferrer"
-          className="bg-maroon text-background flex-1 rounded-full px-3 py-2 text-center text-[10px] tracking-[.1em] uppercase"
-        >
-          Order on WhatsApp
-        </a>
+            {money(price.final)}
+          </>
+        ) : (
+          'Price on request'
+        )}
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
         <button
+          type="button"
+          onClick={() => onOpen(product)}
+          className="focus-visible:outline-brand-gold bg-brand-green text-brand-white hover:bg-brand-green-deep inline-flex min-h-10 items-center justify-center rounded-[2px] px-4 text-xs tracking-[.14em] uppercase focus-visible:outline-2 focus-visible:outline-offset-2"
+        >
+          {soldOut ? 'Ask about availability' : 'Order now'}
+        </button>
+        <button
+          type="button"
           onClick={() => {
             addItem({ id: product.id })
             onAdded(product.name)
           }}
-          className="text-maroon text-[10px] tracking-[.1em] uppercase"
+          className="focus-visible:outline-brand-gold text-ink-muted text-xs tracking-[.14em] uppercase focus-visible:outline-2 focus-visible:outline-offset-2"
         >
           Add to enquiry
         </button>
@@ -115,181 +132,8 @@ function ProductCard({
   )
 }
 
-function QuickView({
-  product,
-  close,
-  onAdded,
-  offer,
-}: {
-  product: Product
-  close: () => void
-  onAdded: (name: string) => void
-  offer: Offer | null
-}) {
-  const { addItem } = useEnquiryStore()
-  const sizes = 'sizes' in product ? product.sizes : undefined
-  const [selected, setSelected] = useState<ProductSize | undefined>(sizes?.[1])
-  const [qty, setQty] = useState(1)
-  const [location, setLocation] = useState('')
-  const [date, setDate] = useState('')
-  const [card, setCard] = useState('')
-  const originalPrice = selected?.price ?? product.price
-  const price = getOfferPrice({ ...product, price: originalPrice }, offer)
-  const message = `Namaste Bagaicha Flower Decor! I'd like to order:\n*${product.name}*${selected ? ` (${selected.label})` : ''}\nPrice: ${formatOfferPrice(price, offer)}\nQuantity: ${qty}\nDelivery location: ${location || '____'}\nDelivery date/time: ${date || '____'}\nCard message (optional): ${card || '____'}`
-  return (
-    <div
-      className="bg-ink/45 fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-6"
-      role="dialog"
-      aria-modal="true"
-      aria-label={`${product.name} quick view`}
-    >
-      <div className="bg-background max-h-[94vh] w-full max-w-4xl overflow-y-auto sm:grid sm:grid-cols-2">
-        <div className="relative aspect-[4/3] sm:aspect-auto sm:min-h-[600px]">
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 100vw, 50vw"
-            className="object-cover"
-          />
-          <button
-            onClick={close}
-            aria-label="Close quick view"
-            className="bg-background absolute top-4 right-4 rounded-full p-2"
-          >
-            <X className="size-4" />
-          </button>
-        </div>
-        <div className="flex flex-col gap-5 p-6 sm:p-10">
-          <div>
-            <p className="eyebrow">{product.category}</p>
-            <h2 className="font-display mt-2 text-4xl leading-none">
-              {product.name}
-            </h2>
-            <p className="text-ink/65 mt-3 text-sm leading-6">
-              {product.description}
-            </p>
-          </div>
-          {sizes && (
-            <div>
-              <p className="mb-2 text-[10px] tracking-[.16em] uppercase">
-                Size
-              </p>
-              <div className="flex gap-2">
-                {sizes.map((size) =>
-                  (() => {
-                    const sizePrice = getOfferPrice(
-                      { ...product, price: size.price },
-                      offer,
-                    )
-                    return (
-                      <button
-                        key={size.label}
-                        onClick={() => setSelected(size)}
-                        className={`rounded-full border px-4 py-2 text-xs ${selected?.label === size.label ? 'border-maroon bg-maroon text-background' : 'border-line'}`}
-                      >
-                        {size.label} ·{' '}
-                        {sizePrice.discounted && (
-                          <del className="mr-1">
-                            <span className="sr-only">Was </span>
-                            {money(sizePrice.original)}
-                          </del>
-                        )}
-                        {money(sizePrice.final)}
-                      </button>
-                    )
-                  })(),
-                )}
-              </div>
-            </div>
-          )}
-          <div className="border-line flex items-center justify-between border-y py-3">
-            <span className="text-[10px] tracking-[.16em] uppercase">
-              Quantity
-            </span>
-            <div className="flex items-center gap-4">
-              <button
-                aria-label="Decrease quantity"
-                onClick={() => setQty(Math.max(1, qty - 1))}
-              >
-                <Minus className="size-4" />
-              </button>
-              <span>{qty}</span>
-              <button
-                aria-label="Increase quantity"
-                onClick={() => setQty(qty + 1)}
-              >
-                <Plus className="size-4" />
-              </button>
-            </div>
-          </div>
-          <div className="grid gap-3">
-            <input
-              aria-label="Delivery area"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Delivery area"
-              className="border-line placeholder:text-ink/40 border-b bg-transparent px-0 py-2 text-sm outline-none"
-            />
-            <input
-              aria-label="Delivery date or time"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              placeholder="Delivery date / time"
-              className="border-line placeholder:text-ink/40 border-b bg-transparent px-0 py-2 text-sm outline-none"
-            />
-            <textarea
-              aria-label="Optional card message"
-              value={card}
-              onChange={(e) => setCard(e.target.value)}
-              placeholder="Optional card message"
-              rows={2}
-              className="border-line placeholder:text-ink/40 resize-none border-b bg-transparent px-0 py-2 text-sm outline-none"
-            />
-          </div>
-          <div className="mt-auto flex items-center justify-between pt-3">
-            <div className="text-right">
-              {price.discounted && (
-                <del className="text-ink/50 block text-sm">
-                  <span className="sr-only">Was </span>
-                  {money(price.original * qty)}
-                </del>
-              )}
-              <p
-                className={`font-display text-3xl ${price.discounted ? 'text-maroon' : ''}`}
-              >
-                {money(price.final * qty)}
-              </p>
-            </div>
-            <div className="flex flex-col items-end gap-2">
-              <a
-                href={whatsapp(message)}
-                target="_blank"
-                rel="noreferrer"
-                className="bg-maroon text-background rounded-full px-5 py-3 text-center text-[10px] tracking-[.1em] uppercase"
-              >
-                Order on WhatsApp
-              </a>
-              <button
-                onClick={() => {
-                  addItem({
-                    id: product.id,
-                    qty,
-                  })
-                  onAdded(product.name)
-                  close()
-                }}
-                className="text-maroon text-[10px] tracking-[.1em] uppercase"
-              >
-                Add to enquiry
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+type ShopTab = 'bouquets' | 'gifts'
+type SortOrder = 'featured' | 'low' | 'high'
 
 function FilterBar({
   tab,
@@ -302,95 +146,132 @@ function FilterBar({
   setOccasion,
   sort,
   setSort,
-}: any) {
+  occasionOptions,
+}: {
+  tab: ShopTab
+  setTab: (tab: ShopTab) => void
+  query: string
+  setQuery: (query: string) => void
+  category: string
+  setCategory: (category: string) => void
+  occasion: string
+  setOccasion: (occasion: string) => void
+  sort: SortOrder
+  setSort: (sort: SortOrder) => void
+  occasionOptions: string[]
+}) {
   const categories =
     tab === 'bouquets'
       ? [
-          'All',
-          'Rose',
-          'Mixed',
-          'Marigold',
-          'Orchid',
-          'Wedding',
-          'Bridal',
-          'Custom',
+          { value: 'All', label: 'All' },
+          { value: 'Rose', label: 'Roses' },
+          { value: 'Mixed', label: 'Mixed' },
+          { value: 'Marigold', label: 'Marigold' },
+          { value: 'Wedding', label: 'Wedding' },
+          { value: 'Bridal', label: 'Bridal' },
         ]
       : [
-          'All',
-          'Chocolates',
-          'Soft toys',
-          'Gift hampers',
-          'Cakes',
-          'Personalised',
-          'Combo with flowers',
+          { value: 'All', label: 'All' },
+          { value: 'Chocolates', label: 'Chocolates' },
+          { value: 'Soft toys', label: 'Soft toys' },
+          { value: 'Gift hampers', label: 'Gift hampers' },
+          { value: 'Cakes', label: 'Cakes' },
+          { value: 'Personalised', label: 'Personalised' },
+          { value: 'Combo with flowers', label: 'Combos' },
         ]
   return (
-    <div className="border-line bg-background/95 sticky top-[76px] z-20 border-y py-4 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 sm:px-8 lg:px-12">
-        <div className="border-line flex items-center gap-7 border-b">
+    <div className="border-line bg-background sticky top-[76px] z-20 border-b">
+      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-4 sm:px-8 lg:px-12">
+        <div
+          role="tablist"
+          aria-label="Shop category"
+          className="border-line flex items-center gap-7 border-b"
+        >
           <button
+            type="button"
+            role="tab"
+            aria-selected={tab === 'bouquets'}
             onClick={() => setTab('bouquets')}
-            aria-pressed={tab === 'bouquets'}
-            className={`font-display pb-3 text-3xl ${tab === 'bouquets' ? 'border-maroon text-maroon border-b-2' : 'text-ink/45'}`}
+            className={`focus-visible:outline-brand-gold font-display border-b-2 px-1 pb-3 text-3xl focus-visible:outline-2 focus-visible:outline-offset-2 ${tab === 'bouquets' ? 'border-brand-green text-brand-green' : 'text-ink-muted border-transparent'}`}
           >
             Bouquets
           </button>
           <button
+            type="button"
+            role="tab"
+            aria-selected={tab === 'gifts'}
             onClick={() => setTab('gifts')}
-            aria-pressed={tab === 'gifts'}
-            className={`font-display pb-3 text-3xl ${tab === 'gifts' ? 'border-maroon text-maroon border-b-2' : 'text-ink/45'}`}
+            className={`focus-visible:outline-brand-gold font-display border-b-2 px-1 pb-3 text-3xl focus-visible:outline-2 focus-visible:outline-offset-2 ${tab === 'gifts' ? 'border-brand-green text-brand-green' : 'text-ink-muted border-transparent'}`}
           >
             Gifts
           </button>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex max-w-full gap-2 overflow-x-auto">
+        <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div
+            role="radiogroup"
+            aria-label="Filter by category"
+            className="flex max-w-full [scrollbar-width:none] gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden"
+          >
             {categories.map((item) => (
               <button
-                key={item}
-                onClick={() => setCategory(item)}
-                aria-pressed={category === item}
-                className={`rounded-full border px-3 py-1.5 text-[10px] tracking-[.08em] whitespace-nowrap uppercase ${category === item ? 'border-maroon bg-maroon text-background' : 'border-line text-ink/60'}`}
+                key={item.value}
+                type="button"
+                role="radio"
+                onClick={() => setCategory(item.value)}
+                aria-checked={category === item.value}
+                className={`focus-visible:outline-brand-gold h-11 shrink-0 rounded-full border px-4 text-xs tracking-[.14em] whitespace-nowrap uppercase focus-visible:outline-2 focus-visible:outline-offset-2 ${category === item.value ? 'border-brand-green bg-brand-green text-brand-white' : 'border-line text-ink'}`}
               >
-                {item}
+                {item.label}
               </button>
             ))}
           </div>
-          <div className="ml-auto flex w-full items-center gap-2 sm:w-auto">
-            <label className="border-line flex flex-1 items-center gap-2 border-b px-1 py-1 sm:w-44">
-              <Search className="text-ink/45 size-4" />
+          <div className="grid min-w-0 grid-cols-2 gap-2 lg:flex lg:shrink-0">
+            <label className="border-line focus-within:border-brand-green focus-within:outline-brand-gold col-span-2 flex h-11 min-w-0 items-center gap-2 border px-3 focus-within:outline-2 focus-within:outline-offset-2 lg:col-span-1 lg:w-60">
+              <Search
+                aria-hidden="true"
+                className="text-ink-muted size-4 shrink-0"
+              />
               <input
-                aria-label="Search flowers and gifts"
+                aria-label="Search arrangements"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search flowers..."
-                className="placeholder:text-ink/45 min-w-0 bg-transparent text-sm outline-none"
+                placeholder="Search arrangements"
+                className="placeholder:text-ink-muted min-w-0 flex-1 bg-transparent text-base outline-none"
               />
             </label>
-            <select
-              aria-label="Filter by occasion"
-              value={occasion}
-              onChange={(e) => setOccasion(e.target.value)}
-              className="hidden bg-transparent text-xs outline-none sm:block"
-            >
-              <option value="All occasions">All occasions</option>
-              <option>Birthday</option>
-              <option>Wedding</option>
-              <option>Anniversary</option>
-              <option>Puja</option>
-              <option>Thank you</option>
-            </select>
-            <select
-              aria-label="Sort flowers and gifts"
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              className="bg-transparent text-xs outline-none"
-            >
-              <option value="featured">Featured</option>
-              <option value="low">Price: low-high</option>
-              <option value="high">Price: high-low</option>
-            </select>
-            <ChevronDown className="pointer-events-none -ml-5 size-3" />
+            <div className="relative min-w-0 lg:w-40">
+              <select
+                aria-label="Filter by occasion"
+                value={occasion}
+                onChange={(e) => setOccasion(e.target.value)}
+                className="focus-visible:outline-brand-gold border-line bg-background text-ink focus:border-brand-green h-11 w-full appearance-none border px-3 pr-9 text-sm outline-none focus-visible:outline-2 focus-visible:outline-offset-2"
+              >
+                <option value="All occasions">Occasion</option>
+                {occasionOptions.map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
+              <ChevronDown
+                aria-hidden="true"
+                className="text-ink-muted pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2"
+              />
+            </div>
+            <div className="relative min-w-0 lg:w-40">
+              <select
+                aria-label="Sort by"
+                value={sort}
+                onChange={(e) => setSort(e.target.value as SortOrder)}
+                className="focus-visible:outline-brand-gold border-line bg-background text-ink focus:border-brand-green h-11 w-full appearance-none border px-3 pr-9 text-sm outline-none focus-visible:outline-2 focus-visible:outline-offset-2"
+              >
+                <option value="featured">Sort by</option>
+                <option value="low">Price: low to high</option>
+                <option value="high">Price: high to low</option>
+              </select>
+              <ChevronDown
+                aria-hidden="true"
+                className="text-ink-muted pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -403,17 +284,33 @@ export default function FlowersGiftsPage() {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
   const [occasion, setOccasion] = useState('All occasions')
-  const [sort, setSort] = useState('featured')
+  const [sort, setSort] = useState<SortOrder>('featured')
   const [selected, setSelected] = useState<Product | null>(null)
   const [toast, setToast] = useState('')
   const [offer, setOffer] = useState<Offer | null>(null)
+  const deferredTab = useDeferredValue(tab)
+  const deferredQuery = useDeferredValue(query)
+  const deferredCategory = useDeferredValue(category)
+  const deferredOccasion = useDeferredValue(occasion)
+  const deferredSort = useDeferredValue(sort)
   useEffect(() => {
     if (!toast) return
     const timeout = window.setTimeout(() => setToast(''), 3000)
     return () => window.clearTimeout(timeout)
   }, [toast])
   const notifyAdded = (name: string) => setToast(name)
-  const products = tab === 'bouquets' ? bouquets : gifts
+  const products = deferredTab === 'bouquets' ? bouquets : gifts
+  const occasionOptions = useMemo(() => {
+    const values = products.flatMap((item) =>
+      'occasions' in item ? item.occasions : item.tags,
+    )
+    return [
+      ...new Set([
+        ...values,
+        ...(deferredTab === 'bouquets' ? ['Orchid', 'Custom'] : []),
+      ]),
+    ].sort()
+  }, [deferredTab, products])
   useEffect(() => {
     const queryValue = new URLSearchParams(window.location.search).get('offer')
     const parsedOfferId = offerQuerySchema.safeParse(queryValue)
@@ -449,6 +346,14 @@ export default function FlowersGiftsPage() {
       `${url.pathname}${url.search}${url.hash}`,
     )
     setCategory('All')
+    setOccasion('All occasions')
+    setSort('featured')
+    setQuery('')
+  }
+  const clearFilters = () => {
+    setCategory('All')
+    setOccasion('All occasions')
+    setSort('featured')
     setQuery('')
   }
   const filtered = useMemo(
@@ -456,32 +361,55 @@ export default function FlowersGiftsPage() {
       [...products]
         .filter(
           (item) =>
-            (category === 'All' || item.category === category) &&
+            (deferredCategory === 'All' ||
+              item.category === deferredCategory) &&
             (!offer || offer.productIds.includes(item.id)) &&
-            (occasion === 'All occasions' ||
-              ('occasions' in item
-                ? item.occasions.includes(occasion)
-                : item.tags.includes(occasion))) &&
-            item.name.toLowerCase().includes(query.toLowerCase()),
+            (deferredOccasion === 'All occasions' ||
+              (deferredOccasion === 'Orchid' || deferredOccasion === 'Custom'
+                ? item.category === deferredOccasion
+                : 'occasions' in item
+                  ? item.occasions.includes(deferredOccasion)
+                  : item.tags.includes(deferredOccasion))) &&
+            `${item.name} ${item.description}`
+              .toLowerCase()
+              .includes(deferredQuery.toLowerCase()),
         )
         .sort((a, b) =>
-          sort === 'low'
+          deferredSort === 'low'
             ? getOfferPrice(a, offer).final - getOfferPrice(b, offer).final
-            : sort === 'high'
+            : deferredSort === 'high'
               ? getOfferPrice(b, offer).final - getOfferPrice(a, offer).final
               : 0,
         ),
-    [products, category, occasion, query, sort, offer],
+    [
+      products,
+      deferredCategory,
+      deferredOccasion,
+      deferredQuery,
+      deferredSort,
+      offer,
+    ],
   )
+  const filtersActive =
+    category !== 'All' ||
+    occasion !== 'All occasions' ||
+    sort !== 'featured' ||
+    query.trim() !== ''
+  const isFiltering =
+    tab !== deferredTab ||
+    category !== deferredCategory ||
+    occasion !== deferredOccasion ||
+    sort !== deferredSort ||
+    query !== deferredQuery
   return (
     <>
-      <main className="pt-[76px]">
-        <section className="mx-auto max-w-7xl px-5 pt-16 pb-12 sm:px-8 lg:px-12 lg:pt-24">
+      <main className="shop-catalogue pt-[76px]">
+        <header className="mx-auto max-w-7xl px-5 pt-20 pb-8 sm:px-8 lg:px-12">
           <p className="eyebrow">Flower studio &amp; gifts</p>
           <h1 className="font-display mt-4 max-w-3xl text-[clamp(4rem,10vw,8.5rem)] leading-[.82] font-light tracking-[-.06em]">
-            Say it with <em className="text-maroon">flowers.</em>
+            Say it with <em>flowers.</em>
           </h1>
-        </section>
+        </header>
         <FilterBar
           tab={tab}
           setTab={changeTab}
@@ -493,14 +421,13 @@ export default function FlowersGiftsPage() {
           setOccasion={setOccasion}
           sort={sort}
           setSort={setSort}
+          occasionOptions={occasionOptions}
         />
-        <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-12">
+        <section className="mx-auto max-w-7xl px-5 pt-8 pb-[120px] sm:px-8 lg:px-12">
           {offer && (
             <div className="border-line mb-8 flex flex-wrap items-center justify-between gap-3 border-y py-4">
-              <p className="text-sm">
-                <span className="text-maroon font-medium">
-                  {offer.festival} offer:
-                </span>{' '}
+              <p className="text-sm leading-6">
+                <span className="text-maroon">{offer.festival} offer:</span>{' '}
                 {offer.discountPercent}% off selected items
               </p>
               <Link
@@ -512,7 +439,23 @@ export default function FlowersGiftsPage() {
               </Link>
             </div>
           )}
-          <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <p className="text-ink-muted text-sm">
+              {filtered.length} {tab === 'bouquets' ? 'arrangements' : 'gifts'}
+            </p>
+            {filtersActive && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="focus-visible:outline-brand-gold text-brand-green hover:decoration-brand-gold text-xs underline decoration-transparent underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
+          <div
+            className={`grid grid-cols-2 gap-x-4 gap-y-10 transition-opacity duration-200 md:grid-cols-2 md:gap-x-8 md:gap-y-12 lg:grid-cols-3 ${isFiltering ? 'opacity-60' : 'opacity-100'}`}
+          >
             {filtered.map((product) => (
               <ProductCard
                 key={product.id}
@@ -525,20 +468,30 @@ export default function FlowersGiftsPage() {
           </div>
           {filtered.length === 0 && (
             <div className="py-24 text-center">
-              <p className="font-display text-4xl">
-                Nothing blooming here yet.
+              <p className="text-base">Nothing matches that yet.</p>
+              <p className="text-ink-muted mt-2 text-sm leading-6">
+                Try another word, or ask us on WhatsApp for a custom
+                arrangement.
               </p>
-              <p className="text-ink/60 mt-2 text-sm">
-                Try another search, or tell us what you have in mind.
-              </p>
+              <a
+                href={whatsapp(
+                  "Namaste! I'd like to request a custom bouquet. My budget is ____, colours are ____ and the occasion is ____.",
+                )}
+                target="_blank"
+                rel="noreferrer"
+                className="focus-visible:outline-brand-gold bg-brand-green text-brand-white hover:bg-brand-green-deep mt-6 inline-flex min-h-11 items-center px-5 text-xs tracking-[.14em] uppercase focus-visible:outline-2 focus-visible:outline-offset-2"
+              >
+                Ask on WhatsApp
+              </a>
             </div>
           )}
         </section>
-        <section className="bg-sage text-background mx-5 my-10 grid gap-6 px-6 py-10 sm:mx-8 sm:px-10 lg:mx-auto lg:max-w-7xl lg:grid-cols-[1fr_auto] lg:items-center lg:px-14">
+        <section className="bg-surface mx-5 my-10 grid gap-6 px-6 py-10 sm:mx-8 sm:px-10 lg:mx-auto lg:max-w-7xl lg:grid-cols-[1fr_auto] lg:items-center lg:px-14">
           <div>
-            <p className="eyebrow text-background/60">Made for your moment</p>
+            <p className="eyebrow">Made for your moment</p>
             <h2 className="font-display mt-3 max-w-xl text-4xl leading-none sm:text-5xl">
-              Can&apos;t find what you imagine? We&apos;ll design it for you.
+              Can&apos;t find what you imagine? We&apos;ll <em>design</em> it
+              for you.
             </h2>
           </div>
           <a
@@ -547,7 +500,7 @@ export default function FlowersGiftsPage() {
             )}
             target="_blank"
             rel="noreferrer"
-            className="bg-background text-sage w-fit rounded-full px-5 py-3 text-[10px] tracking-[.1em] uppercase"
+            className="bg-brand-green text-brand-white hover:bg-brand-green-deep w-fit rounded-[2px] px-5 py-3 text-xs tracking-[.14em] uppercase"
           >
             Request a custom bouquet
           </a>
@@ -579,16 +532,16 @@ export default function FlowersGiftsPage() {
         <div
           role="status"
           aria-live="polite"
-          className="border-line bg-background fixed right-4 bottom-4 z-[60] flex w-[calc(100%-2rem)] max-w-sm animate-[fade-up_0.3s_ease-out_both] items-center gap-4 border p-4 shadow-[0_16px_48px_rgba(37,34,29,0.16)] sm:right-6 sm:bottom-6"
+          className="border-line bg-background fixed right-4 bottom-4 z-[60] flex w-[calc(100%-2rem)] max-w-sm animate-[fade-up_0.3s_ease-out_both] items-center gap-4 border p-4 sm:right-6 sm:bottom-6"
         >
           <span className="bg-sage/10 text-sage flex size-11 shrink-0 items-center justify-center rounded-full">
             <Check className="size-5" strokeWidth={2.5} />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="text-maroon block text-[9px] tracking-[.18em] uppercase">
+            <span className="text-maroon block text-xs tracking-[.12em] uppercase">
               Added to your enquiry
             </span>
-            <span className="font-display mt-1 block truncate text-xl leading-tight">
+            <span className="font-display mt-1 block truncate text-xl">
               {toast}
             </span>
           </span>

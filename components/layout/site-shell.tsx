@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import {
@@ -27,6 +28,7 @@ import { basketMessage, buildWhatsAppUrl } from '@/lib/whatsapp'
 import { site } from '@/config/site'
 import { bouquets, getActiveOffer, gifts } from '@/lib/content'
 import { formatOfferPrice, getOfferPrice } from '@/lib/pricing'
+import logo from '@/app/logo/images.jpg'
 
 const greeting =
   "Namaste Bagaicha Flower Decor! I'd like to enquire about your decoration services."
@@ -42,24 +44,6 @@ const links = [
 
 const whatsappUrl = buildWhatsAppUrl
 
-function Mark() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 28 24"
-      className="text-marigold-contrast size-7"
-    >
-      <path
-        d="M14 12C5 13 3 6 7 3c4 0 7 3 7 9Zm0 0c9 1 11-6 7-9-4 0-7 3-7 9Zm0 0c0 7-5 9-8 6 0-4 3-6 8-6Zm0 0c0 7 5 9 8 6 0-4-3-6-8-6Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      <path d="M14 12v9" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
-  )
-}
-
 function Brand() {
   return (
     <Link
@@ -67,16 +51,19 @@ function Brand() {
       className="flex items-center gap-2"
       aria-label="Bagaicha home"
     >
-      <Mark />
+      <Image
+        src={logo}
+        alt=""
+        aria-hidden="true"
+        priority
+        className="size-11 rounded-full object-cover"
+      />
       <span>
-        <span className="font-display block text-3xl leading-none tracking-tight">
+        <span className="font-display block text-[26px] leading-none tracking-tight">
           Bagaicha
         </span>
-        <span className="text-ink/55 mt-1 block text-[8px] tracking-[.2em] uppercase">
-          Flower Decor &amp; Events{' '}
-          <span className="font-display ml-1 text-[11px] tracking-normal normal-case">
-            बगैँचा
-          </span>
+        <span className="text-ink/55 mt-1 block text-[8px] tracking-[.16em] uppercase">
+          Flower Decor &amp; Events
         </span>
       </span>
     </Link>
@@ -188,7 +175,7 @@ function EnquiryBasket() {
               href={whatsappUrl(message)}
               target="_blank"
               rel="noreferrer"
-              className="bg-maroon text-background flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm transition-transform hover:-translate-y-0.5"
+              className="bg-maroon text-background flex w-full items-center justify-center gap-2 rounded-[2px] px-5 py-3 text-sm transition-transform hover:-translate-y-0.5"
             >
               <MessageCircle className="size-4" />
               Send enquiry on WhatsApp
@@ -247,7 +234,7 @@ function MobileMenu() {
             href={whatsappUrl(greeting)}
             target="_blank"
             rel="noreferrer"
-            className="bg-maroon text-background flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm"
+            className="bg-maroon text-background flex w-full items-center justify-center gap-2 rounded-[2px] px-5 py-3 text-sm"
           >
             <MessageCircle className="size-4" />
             Book on WhatsApp
@@ -269,7 +256,7 @@ export function SiteHeader() {
   }, [])
   return (
     <header
-      className={`bg-background/95 fixed inset-x-0 top-0 z-40 backdrop-blur-sm transition-all duration-500 ease-out ${scrolled ? 'border-line border-b shadow-[0_10px_30px_rgba(42,33,28,0.06)]' : ''}`}
+      className={`bg-background fixed inset-x-0 top-0 z-40 transition-all duration-500 ease-out ${scrolled ? 'border-line border-b' : ''}`}
     >
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
         <div className="flex items-center gap-3">
@@ -281,7 +268,7 @@ export function SiteHeader() {
             <a
               key={link.href}
               href={link.href}
-              className={`hover:text-maroon relative py-2 text-[11px] tracking-[.16em] uppercase transition-all duration-300 ease-out ${pathname === link.href ? 'text-maroon after:bg-marigold after:absolute after:inset-x-0 after:-bottom-1 after:h-px' : 'text-ink/70'}`}
+              className={`hover:text-brand-green relative py-2 text-[11px] tracking-[.16em] uppercase transition-colors duration-300 ease-out ${pathname === link.href ? 'text-brand-green after:bg-brand-green after:absolute after:inset-x-0 after:-bottom-1 after:h-px' : 'text-ink/70'}`}
             >
               {link.label}
             </a>
@@ -292,7 +279,7 @@ export function SiteHeader() {
             href={whatsappUrl(greeting)}
             target="_blank"
             rel="noreferrer"
-            className="border-maroon text-maroon hover:bg-maroon hover:text-background hidden items-center gap-2 rounded-full border px-4 py-2 text-[10px] tracking-[.12em] uppercase transition-colors sm:flex"
+            className="border-ink text-ink hover:bg-ink hover:text-background hidden items-center gap-2 rounded-[2px] border px-4 py-2 text-[10px] tracking-[.12em] uppercase transition-colors sm:flex"
           >
             <MessageCircle className="size-3.5" />
             Book on WhatsApp
@@ -323,7 +310,7 @@ function PetalLine() {
 
 export function SiteFooter() {
   return (
-    <footer className="bg-sage text-background">
+    <footer className="section-brand-deep">
       <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 lg:px-16">
         <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           <div>
@@ -336,7 +323,7 @@ export function SiteFooter() {
             <PetalLine />
           </div>
           <div>
-            <p className="text-background/55 mb-5 text-[10px] tracking-[.2em] uppercase">
+            <p className="text-brand-gold mb-5 text-[10px] tracking-[.2em] uppercase">
               Quick links
             </p>
             <div className="text-background/75 flex flex-col gap-3 text-sm">
@@ -352,7 +339,7 @@ export function SiteFooter() {
             </div>
           </div>
           <div>
-            <p className="text-background/55 mb-5 text-[10px] tracking-[.2em] uppercase">
+            <p className="text-brand-gold mb-5 text-[10px] tracking-[.2em] uppercase">
               Services
             </p>
             <div className="text-background/75 flex flex-col gap-3 text-sm">
@@ -363,24 +350,35 @@ export function SiteFooter() {
             </div>
           </div>
           <div>
-            <p className="text-background/55 mb-5 text-[10px] tracking-[.2em] uppercase">
+            <p className="text-brand-gold mb-5 text-[10px] tracking-[.2em] uppercase">
               Contact
             </p>
             <div className="text-background/75 flex flex-col gap-3 text-sm">
               <span>Pokhara, Nepal</span>
               <a href={`tel:${site.phone.replace(/\s/g, '')}`}>{site.phone}</a>
               <a href={whatsappUrl(greeting)}>WhatsApp us</a>
-              <span>Sun–Fri · 9am–6pm</span>
+              <span>{site.openingHours}</span>
             </div>
           </div>
         </div>
-        <div className="border-background/20 text-background/50 mt-16 flex flex-col justify-between gap-3 border-t pt-5 text-[10px] tracking-[.15em] uppercase sm:flex-row">
+        <div className="rule-gold mt-16" />
+        <div className="text-background/70 mt-5 flex flex-col justify-between gap-3 pt-5 text-[10px] tracking-[.15em] uppercase sm:flex-row">
           <span>
             © {new Date().getFullYear()} Bagaicha Flower Decor and Events
           </span>
           <span>Pokhara, Nepal</span>
           <div className="flex flex-wrap gap-4">
-            <span>Instagram · Facebook</span>
+            {Object.entries(site.socialLinks).map(([name, href]) => (
+              <a
+                key={name}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-background"
+              >
+                {name.charAt(0).toUpperCase() + name.slice(1)}
+              </a>
+            ))}
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
           </div>
@@ -397,7 +395,7 @@ export function FloatingWhatsApp() {
       target="_blank"
       rel="noreferrer"
       aria-label="Chat with us on WhatsApp"
-      className="group bg-maroon text-background fixed right-5 bottom-5 z-30 flex size-14 items-center justify-center rounded-full shadow-[0_12px_30px_rgba(123,45,59,0.25)] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(123,45,59,0.32)]"
+      className="group bg-brand-green text-brand-white hover:bg-brand-green-deep fixed right-5 bottom-[calc(1.25rem_+_env(safe-area-inset-bottom))] z-30 flex size-14 items-center justify-center rounded-full transition-all duration-300 ease-out hover:-translate-y-1"
     >
       <MessageCircle className="size-6" />
       <span className="bg-ink text-background pointer-events-none absolute right-full mr-3 hidden rounded-full px-3 py-1.5 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100 sm:block">
@@ -411,7 +409,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       {site.announcement.enabled && (
-        <div className="bg-marigold text-ink px-4 py-2 text-center text-xs tracking-wide">
+        <div className="border-line bg-background text-brand-green border-b px-4 py-2 text-center text-xs tracking-wide">
           {site.announcement.text}
         </div>
       )}
