@@ -1,29 +1,17 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/seo'
 import { ArrowUpRight } from 'lucide-react'
 import { work } from '@/data/work'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: 'Recent work',
   description:
     'A few weddings, family rituals and celebrations decorated by Bagaicha in Pokhara and beyond.',
-  alternates: { canonical: '/work' },
-  openGraph: {
-    title: 'Recent work',
-    description:
-      'A few weddings, family rituals and celebrations decorated by Bagaicha in Pokhara and beyond.',
-    url: '/work',
-    images: ['/og/work'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Recent work',
-    description:
-      'A few weddings, family rituals and celebrations decorated by Bagaicha in Pokhara and beyond.',
-    images: ['/og/work'],
-  },
-}
+  path: '/work',
+  image: '/og/work',
+})
 
 export default function WorkPage() {
   return (

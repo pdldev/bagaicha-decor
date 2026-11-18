@@ -4,6 +4,8 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { getWork, work } from '@/data/work'
+import { buildMetadata } from '@/lib/seo'
+import { JsonLd } from '@/components/seo/json-ld'
 
 export function generateStaticParams() {
   return work.map(({ slug }) => ({ slug }))
@@ -16,25 +18,19 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params
   const entry = getWork(slug)
-  if (!entry) return {}
-
-  return {
+  if (!entry)
+    return buildMetadata({
+      title: 'Recent work',
+      description: 'Explore recent work by Bagaicha in Pokhara.',
+      path: `/work/${slug}`,
+      noIndex: true,
+    })
+  return buildMetadata({
     title: entry.title,
-    description: entry.story,
-    alternates: { canonical: `/work/${slug}` },
-    openGraph: {
-      title: entry.title,
-      description: entry.story,
-      url: `/work/${slug}`,
-      images: [`/og/work/${slug}`],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: entry.title,
-      description: entry.story,
-      images: [`/og/work/${slug}`],
-    },
-  }
+    description: `${entry.story} Explore this ${entry.eventType.toLowerCase()} case study by Bagaicha in Pokhara.`,
+    path: `/work/${slug}`,
+    image: `/og/work/${slug}`,
+  })
 }
 export default async function WorkDetail({
   params,
@@ -44,8 +40,16 @@ export default async function WorkDetail({
   const { slug } = await params
   const entry = getWork(slug)
   if (!entry) notFound()
+  const creativeWorkLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: entry.title,
+    description: entry.story,
+    location: { '@type': 'Place', name: entry.venue },
+  }
   return (
     <main className="bg-background text-ink">
+      <JsonLd data={creativeWorkLd} />
       <section className="mx-auto max-w-7xl px-6 pt-40 pb-20 sm:px-10 md:pt-48 md:pb-32 lg:px-16">
         <Link
           href="/work"

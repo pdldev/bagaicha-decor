@@ -1,23 +1,12 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: 'Terms of use',
   description:
     'Read the terms for using the Bagaicha Flower Decor and Events website.',
-  alternates: { canonical: '/terms' },
-  openGraph: {
-    title: 'Terms of use',
-    description:
-      'Read the terms for using the Bagaicha Flower Decor and Events website.',
-    url: '/terms',
-  },
-  twitter: {
-    card: 'summary',
-    title: 'Terms of use',
-    description:
-      'Read the terms for using the Bagaicha Flower Decor and Events website.',
-  },
-}
+  path: '/terms',
+})
 
 export default function TermsPage() {
   return (

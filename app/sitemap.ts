@@ -1,8 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { services } from '@/data/services'
 import { work } from '@/data/work'
-
-const siteUrl = 'https://bagaichaevents.com'
+import { site } from '@/data/site'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
@@ -22,7 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ]
 
   return routes.map((route) => ({
-    url: `${siteUrl}${route}`,
+    url: `${site.url}${route}`,
     changeFrequency: 'monthly',
     priority: route === '' ? 1 : route.split('/').length > 2 ? 0.6 : 0.8,
   }))

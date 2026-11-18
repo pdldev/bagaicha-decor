@@ -6,7 +6,9 @@ import {
 } from 'next/font/google'
 import './globals.css'
 import { SiteShell } from '@/components/layout/site-shell'
-import { site } from '@/config/site'
+import { JsonLd } from '@/components/seo/json-ld'
+import { site } from '@/data/site'
+import { buildMetadata } from '@/lib/seo'
 
 const cormorant = Cormorant_Garamond({
   variable: '--font-cormorant',
@@ -27,39 +29,13 @@ const dmSans = DM_Sans({
   weight: ['400', '500', '600'],
 })
 
-const siteUrl = 'https://bagaichaevents.com'
-
-export const metadata: Metadata = {
-  title: {
-    default: 'Bagaicha Flower Decor and Events | Pokhara',
-    template: '%s | Bagaicha Flower Decor and Events',
-  },
+export const metadata: Metadata = buildMetadata({
+  title: 'Bagaicha Flower Decor and Events',
   description:
-    'Thoughtful flowers, floral decor and event styling for beautiful celebrations in Pokhara, Nepal.',
-  metadataBase: new URL(siteUrl),
-  alternates: { canonical: '/' },
-  openGraph: {
-    title: site.name,
-    description: site.tagline,
-    type: 'website',
-    locale: 'en_NP',
-    url: siteUrl,
-    images: [
-      {
-        url: '/placeholder.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Bagaicha flowers and event decor',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: site.name,
-    description: site.tagline,
-    images: ['/placeholder.jpg'],
-  },
-}
+    'Thoughtful flowers, floral decor and event styling for beautiful celebrations and meaningful ceremonies in Pokhara, Nepal.',
+  path: '/',
+  image: '/placeholder.jpg',
+})
 
 export const viewport: Viewport = {
   colorScheme: 'light',
@@ -69,11 +45,40 @@ export const viewport: Viewport = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const organizationId = `${site.url}/#organization`
+  const localBusinessId = `${site.url}/#localbusiness`
+  const structuredData = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      '@id': organizationId,
+      name: site.legalName,
+      alternateName: site.alternateNames,
+      url: site.url,
+      logo: `${site.url}/placeholder-logo.png`,
+      sameAs: site.sameAs,
+      contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: site.phone || undefined,
+        contactType: 'customer service',
+        areaServed: 'NP',
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      '@id': `${site.url}/#website`,
+      url: site.url,
+      name: site.legalName,
+      publisher: { '@id': organizationId },
+    },
+  ]
   return (
     <html lang="en">
       <body
         className={`${cormorant.variable} ${dmSans.variable} ${devanagari.variable} antialiased`}
       >
+        <JsonLd data={structuredData} />
         <SiteShell>{children}</SiteShell>
       </body>
     </html>

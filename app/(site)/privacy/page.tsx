@@ -1,23 +1,12 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: 'Privacy policy',
   description:
     'Learn how Bagaicha Flower Decor and Events handles website enquiries, local storage and optional analytics.',
-  alternates: { canonical: '/privacy' },
-  openGraph: {
-    title: 'Privacy policy',
-    description:
-      'Learn how Bagaicha handles website enquiries, local storage and optional analytics.',
-    url: '/privacy',
-  },
-  twitter: {
-    card: 'summary',
-    title: 'Privacy policy',
-    description:
-      'Learn how Bagaicha handles website enquiries, local storage and optional analytics.',
-  },
-}
+  path: '/privacy',
+})
 
 export default function PrivacyPage() {
   return (

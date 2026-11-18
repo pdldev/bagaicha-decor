@@ -35,6 +35,12 @@ const nextConfig = withBundleAnalyzer({
   async headers() {
     return [{ source: '/(.*)', headers: securityHeaders }]
   },
+  async redirects() {
+    return [
+      { source: '/flowers', destination: '/flowers-gifts', permanent: true },
+      { source: '/gifts', destination: '/flowers-gifts', permanent: true },
+    ]
+  },
 })
 
 export default nextConfig

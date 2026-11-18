@@ -1,4 +1,9 @@
 import { CatalogueDownloadCard } from '@/components/services/catalogue-download-card'
+import { buildMetadata } from '@/lib/seo'
+import { JsonLd } from '@/components/seo/json-ld'
+import { bouquets } from '@/data/bouquets'
+import { gifts } from '@/data/gifts'
+import { site } from '@/data/site'
 
 const fullCatalogue = {
   file: '/downloads/catalogue/Catalog.pdf',
@@ -7,28 +12,28 @@ const fullCatalogue = {
   sizeLabel: '2.4 MB',
 }
 
-export const metadata = {
+export const metadata = buildMetadata({
   title: 'Catalogue',
   description:
-    'Browse the Bagaicha design catalogue and download the full PDF.',
-  alternates: { canonical: '/catalogue' },
-  openGraph: {
-    title: 'Bagaicha design catalogue',
-    description: 'Browse and download the Bagaicha design catalogue.',
-    url: '/catalogue',
-    images: ['/images/catalogue/full-catalogue-preview.jpg'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Bagaicha design catalogue',
-    description: 'Browse and download the Bagaicha design catalogue.',
-    images: ['/images/catalogue/full-catalogue-preview.jpg'],
-  },
-}
+    'Browse the Bagaicha design catalogue and download the full PDF for wedding, celebration and floral decor ideas.',
+  path: '/catalogue',
+  image: '/images/catalogue/full-catalogue-preview.jpg',
+})
 
 export default function CataloguePage() {
+  const itemListLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: [...bouquets, ...gifts].map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: `${site.url}/flowers-gifts`,
+    })),
+  }
   return (
     <main className="bg-background text-ink overflow-hidden">
+      <JsonLd data={itemListLd} />
       <section className="mx-auto max-w-7xl px-6 pt-32 pb-16 sm:px-10 lg:px-16 lg:pt-36 lg:pb-20">
         <div className="mb-12">
           <p className="eyebrow">Our catalogue</p>

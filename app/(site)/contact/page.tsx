@@ -9,28 +9,22 @@ import {
   getKathmanduDate,
 } from '@/lib/contact/opening-hours'
 import { buildWhatsAppUrl, greetingMessage } from '@/lib/whatsapp'
+import { buildMetadata } from '@/lib/seo'
+import { JsonLd } from '@/components/seo/json-ld'
+import { faqs } from '@/data/faqs'
+import { site as dataSite } from '@/data/site'
 
 const pageTitle = 'Contact | Bagaicha Flower Decor and Events, Pokhara'
 const pageDescription =
   'Contact Bagaicha Flower Decor and Events in Pokhara for weddings, pasni, bratabandha and celebrations. Message us on WhatsApp for a quick reply.'
 
-export const metadata: Metadata = {
-  title: { absolute: pageTitle },
-  description: pageDescription,
-  alternates: { canonical: '/contact' },
-  openGraph: {
-    title: pageTitle,
-    description: pageDescription,
-    url: '/contact',
-    images: [{ url: '/placeholder.jpg', alt: pageTitle }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: pageTitle,
-    description: pageDescription,
-    images: ['/placeholder.jpg'],
-  },
-}
+export const metadata: Metadata = buildMetadata({
+  title: 'Contact',
+  description:
+    'Contact Bagaicha Flower Decor and Events in Pokhara for weddings, pasni, bratabandha and celebrations via WhatsApp.',
+  path: '/contact',
+  image: '/placeholder.jpg',
+})
 
 export default function ContactPage() {
   const whatsappUrl = buildWhatsAppUrl(greetingMessage())
@@ -45,29 +39,56 @@ export default function ContactPage() {
     { name: 'Facebook', href: site.socialLinks.facebook, Icon: ThumbsUp },
     { name: 'TikTok', href: site.socialLinks.tiktok, Icon: Music2 },
   ]
-  const jsonLd = {
+  const localBusinessLd = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
+    '@id': `${dataSite.url}/#localbusiness`,
+    additionalType: [
+      'https://schema.org/Florist',
+      'https://schema.org/EventPlanner',
+    ],
     name: site.name,
+    description: 'Flower decor and event styling for celebrations in Pokhara.',
     telephone: site.phone,
     email: site.email,
+    url: dataSite.url,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: site.address,
-      addressLocality: 'Pokhara',
-      addressRegion: 'Gandaki Pradesh',
-      addressCountry: 'NP',
+      streetAddress: dataSite.address.streetAddress,
+      addressLocality: dataSite.address.addressLocality,
+      addressRegion: dataSite.address.addressRegion,
+      addressCountry: dataSite.address.addressCountry,
     },
-    openingHours: 'Su-Sa 07:00-19:00',
-    sameAs: Object.values(site.socialLinks).filter(Boolean),
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+      ],
+      opens: '07:00',
+      closes: '19:00',
+    },
+    areaServed: ['Pokhara', 'Lekhnath', 'Sarangkot', 'Lakeside'],
+    sameAs: dataSite.sameAs,
+  }
+  const faqLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
   }
 
   return (
     <main className="pb-[calc(120px+env(safe-area-inset-bottom))] md:pb-0">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={[localBusinessLd, faqLd]} />
 
       <header className="border-line mx-auto grid max-w-7xl gap-8 border-b px-6 pt-16 pb-10 sm:px-10 md:grid-cols-[1fr_auto] md:items-end md:pt-24 lg:px-16">
         <div>

@@ -1,23 +1,12 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: 'Event gallery',
   description:
     'Explore wedding, family ritual and celebration decorations by Bagaicha in Pokhara.',
-  alternates: { canonical: '/gallary' },
-  openGraph: {
-    title: 'Event gallery',
-    description:
-      'Explore wedding, family ritual and celebration decorations by Bagaicha in Pokhara.',
-    url: '/gallary',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Event gallery',
-    description:
-      'Explore wedding, family ritual and celebration decorations by Bagaicha in Pokhara.',
-  },
-}
+  path: '/gallary',
+})
 
 export default function GalleryLayout({
   children,

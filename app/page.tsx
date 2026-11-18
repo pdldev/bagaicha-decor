@@ -27,6 +27,8 @@ import receptionImage from './images/wr1.jpeg'
 import haldiImage from './images/haldi1.jpg'
 import birthdayImage from './images/bd1.jpeg'
 import carImage from './images/car1.jpeg'
+import { JsonLd } from '@/components/seo/json-ld'
+import { site } from '@/data/site'
 
 const image = '/placeholder.jpg'
 const galleryImages = Object.values(
@@ -159,6 +161,45 @@ export default function Page() {
   }, [lightbox, visibleGallery.length])
   return (
     <main className="bg-background text-ink overflow-hidden">
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'LocalBusiness',
+          '@id': `${site.url}/#localbusiness`,
+          additionalType: [
+            'https://schema.org/Florist',
+            'https://schema.org/EventPlanner',
+          ],
+          name: site.legalName,
+          description:
+            'Flowers, floral decor and event styling for celebrations in Pokhara, Nepal.',
+          url: site.url,
+          telephone: site.phone || undefined,
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: site.address.streetAddress,
+            addressLocality: site.address.addressLocality,
+            addressRegion: site.address.addressRegion,
+            addressCountry: site.address.addressCountry,
+          },
+          openingHoursSpecification: {
+            '@type': 'OpeningHoursSpecification',
+            dayOfWeek: [
+              'Sunday',
+              'Monday',
+              'Tuesday',
+              'Wednesday',
+              'Thursday',
+              'Friday',
+              'Saturday',
+            ],
+            opens: '07:00',
+            closes: '19:00',
+          },
+          areaServed: ['Pokhara', 'Lekhnath', 'Sarangkot', 'Lakeside'],
+          sameAs: site.sameAs,
+        }}
+      />
       <section className="bg-ink text-background relative flex min-h-svh items-center">
         <Image
           src={heroImage}
@@ -210,9 +251,8 @@ export default function Page() {
         <section className="mx-auto grid max-w-7xl gap-10 px-6 py-20 sm:px-10 lg:grid-cols-[1.1fr_.9fr] lg:items-center lg:px-16 lg:py-32">
           <p className="font-display max-w-3xl text-4xl leading-[1.02] font-light tracking-[-.03em] sm:text-6xl">
             A flower studio for{' '}
-            <em className="text-marigold-contrast">unforgettable</em>{' '}
-            gatherings, where every petal has a place and every detail feels
-            like you.
+            <em className="text-brand-gold">unforgettable</em> gatherings, where
+            every petal has a place and every detail feels like you.
           </p>
           <div className="relative min-h-72">
             <Image
@@ -464,11 +504,7 @@ export default function Page() {
           </span>
         </p>
         <h2 className="section-title mb-14">
-          <span className="motion-line-mask">
-            <span className="motion-line" data-motion="how-heading">
-              <em>Simple</em> from here.
-            </span>
-          </span>
+          <em>Simple</em> from here.
         </h2>
         <div className="relative grid gap-8 sm:grid-cols-4 sm:gap-4">
           <div
@@ -573,7 +609,8 @@ export default function Page() {
             <div>
               <p className="eyebrow">Recent work</p>
               <SectionHeading>
-                A few days we&apos;ve <em>decorated.</em>
+                A few days we&apos;ve{' '}
+                <em className="text-brand-gold">decorated.</em>
               </SectionHeading>
             </div>
             <Link

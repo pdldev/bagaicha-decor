@@ -2,27 +2,15 @@ import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
 import { WhatsAppButton } from '@/components/shared/whatsapp-button'
 import { aboutStory, numbers, values } from '@/data/about'
+import { buildMetadata } from '@/lib/seo'
 
-export const metadata = {
+export const metadata = buildMetadata({
   title: 'About us | Bagaicha Flower Decor and Events',
   description:
     'Meet Bagaicha, a flower decor and events studio rooted in Pokhara and grown around the celebrations that matter most.',
-  alternates: { canonical: '/about' },
-  openGraph: {
-    title: 'About us | Bagaicha Flower Decor and Events',
-    description:
-      'Meet Bagaicha, a flower decor and events studio rooted in Pokhara and grown around the celebrations that matter most.',
-    url: '/about',
-    images: ['/placeholder.jpg'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'About us | Bagaicha Flower Decor and Events',
-    description:
-      'Meet Bagaicha, a flower decor and events studio rooted in Pokhara and grown around the celebrations that matter most.',
-    images: ['/placeholder.jpg'],
-  },
-}
+  path: '/about',
+  image: '/placeholder.jpg',
+})
 
 function Reveal({
   children,
